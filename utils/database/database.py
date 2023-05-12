@@ -43,7 +43,7 @@ def execute_many_query(connector, query, value=False):
 
 
 def setup_db(connector):
-    for query in TABLES_LIST:
+    for query in TABLES_QUERIES_LIST:
         execute_query(connector, query)
 
 
