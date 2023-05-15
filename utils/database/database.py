@@ -1,10 +1,10 @@
 import sqlite3
 from sqlite3 import Error
+import logging
 
 from accessify import private
 
 
-@private
 class DbConnector:
 
     def __init__(self, path, tables_queries_list):
@@ -14,8 +14,12 @@ class DbConnector:
         :param tables_queries_list: queries for db setup
         """
         self.path = path
+        logging.basicConfig(level=logging.INFO, filename="bd_log.log",
+                            filemode="w",
+                            format="%(asctime)s %(levelname)s %(message)s")
         self.connection = self.__create_connection(self.path)
         self.__setup_db(self.connection, tables_queries_list)
+
 
     @classmethod
     def __create_connection(cls, path):
@@ -28,9 +32,9 @@ class DbConnector:
         conn = None
         try:
             conn = sqlite3.connect(path)
-            print("Connection to SQLite DB successful")
+            logging.info("Connection to SQLite DB successful")
         except Error as e:
-            print(f"The error {e} occurred")
+            logging.error(f"The error {e} occurred")
         return conn
 
     @classmethod
@@ -44,17 +48,15 @@ class DbConnector:
         for query in tables_queries_list:
             try:
                 cur.execute(query)
-                print('Query executed successfully')
-
+                logging.info('Table created successfully')
             except Error as e:
-                print(f'The error {e} occurred')
+                logging.error(f'The error {e} occurred')
 
         connection.commit()
 
     def select_all_analysis_types(self):
         """
         Query all rows in the analysis table
-        :param conn: the Connection object
         :return: rows with name + abbreviation
         """
         cur = self.connection.cursor()
@@ -62,10 +64,10 @@ class DbConnector:
 
         try:
             cur.execute(query)
-            print('Query executed successfully')
-
+            logging.info('All analysis types were successfully selected')
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(
+                f'The error {e} occurred while selecting all analysis types')
 
         # коммит не нужен, т.к. бд никак не изменяется
         # conn.commit()
@@ -87,10 +89,11 @@ class DbConnector:
 
         try:
             cur.execute(query, (type_id,))
-            print('Query executed successfully')
+            logging.info('Analysis info by type was successfully selected')
 
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(f'The error {e} occurred while selecting analysis'
+                          f'info by type')
 
         # conn.commit()
         rows = cur.fetchall()
@@ -107,19 +110,20 @@ class DbConnector:
 
         try:
             cur.execute(query, (name,))
-            print('Query executed successfully')
+            logging.info('Selecting lab_id by name executed successfully')
 
         except Error as e:
-            print(f'The error {e} occurred')
-        # conn.commit()
+            logging.error(f'The error {e} occurred while selecting lab_id by '
+                          f'name')
+
         rows = cur.fetchone()
         return rows if rows is None else rows[0]
 
     def insert_lab(self, lab):
-        '''
+        """
         Insert new lab
         :param lab: name of the lab
-        '''
+        """
         if self.select_lab_id_by_name(lab) is not None:
             return
 
@@ -129,8 +133,9 @@ class DbConnector:
         try:
             cur.execute(query, (lab,))
             self.connection.commit()
+            logging.info('Lab was successfully added')
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(f'The error {e} occurred while adding new lab')
 
     def select_analysis_value_type_id_by_name(self, name):
         """
@@ -143,10 +148,12 @@ class DbConnector:
 
         try:
             cur.execute(query, (name,))
-            print('Query executed successfully')
+            logging.info(
+                'Analysis value type id was successfully selected by name')
 
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(f'The error {e} occurred while selecting '
+                          f'analysis type id by name')
 
         rows = cur.fetchone()
         return rows if rows is None else rows[0]
@@ -166,10 +173,11 @@ class DbConnector:
 
         try:
             cur.execute(query, (name,))
-            print('Query executed successfully')
             self.connection.commit()
+            logging.info('Analysis value type was inserted successfully')
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(f'The error {e} occurred while inserting analysis '
+                          f'value type')
 
     def insert_analysis_value(self, data):
         """
@@ -213,10 +221,11 @@ class DbConnector:
         cur = self.connection.cursor()
         try:
             cur.execute(query, data)
-            print('Query executed successfully')
             self.connection.commit()
+            logging.info('Analysis value was inserted successfully')
         except Error as e:
-            print(f'The error {e} occurred')
+            logging.error(f'The error {e} occurred while inserting analysis '
+                          f'value')
 
     def delete(self, table, data):
         return
