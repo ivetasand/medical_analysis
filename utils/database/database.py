@@ -1,14 +1,20 @@
 import sqlite3
-from utils.constants.database import *
 from sqlite3 import Error
-from accessify import private, protected
+
+from accessify import protected, private
 
 
+@private
 class DbConnector:
-    def __init__(self, path):
+    def __init__(self, path, tables_queries_list):
+        """
+        init database handler and editor
+        :param path: desired path to db file
+        :param tables_queries_list: queries for db setup
+        """
         self.path = path
         self.connection = self.__create_connection(self.path)
-        self.__setup_db(self.connection)
+        self.__setup_db(self.connection, tables_queries_list)
         self.__select_lab_id_by_name(self.connection, 1)
 
     @classmethod
@@ -28,15 +34,14 @@ class DbConnector:
         return conn
 
     @classmethod
-    def __setup_db(cls, connection):
+    def __setup_db(cls, connection, tables_queries_list):
         """
         Create tables from tables queries list
         :param conn: the Connection object
-        :return:
         """
         cur = connection.cursor()
 
-        for query in TABLES_QUERIES_LIST:
+        for query in tables_queries_list:
             try:
                 cur.execute(query)
                 print('Query executed successfully')
@@ -50,7 +55,7 @@ class DbConnector:
         """
         Query all rows in the analysis table
         :param conn: the Connection object
-        :return:
+        :return: rows with name + abbreviation
         """
         cur = self.connection.cursor()
         query = "SELECT name, abbreviation FROM analysis_value_type"
@@ -72,7 +77,7 @@ class DbConnector:
     @classmethod
     def __select_analysis_id_by_type(cls, connection, analysis_type):
         """
-        Query analysis id by type. Internal function
+        query analysis id by type
         :param analysis_type: name of the selected analysis type
         :return: id of the type
         """
@@ -93,9 +98,8 @@ class DbConnector:
 
     def select_analysis_info_by_type(self, analysis_type):
         """
-        Query all analysis of the selected type. Public function
-        :param conn: the Connection object
-        :param analysis_type: name of the selected analysis type
+        Query all data for every analysis of the selected type
+        :param analysis_type: id the selected analysis type
         :return: all information about selected analysis
         """
         cur = self.connection.cursor()
@@ -118,9 +122,8 @@ class DbConnector:
     @classmethod
     def __select_lab_id_by_name(cls, connection, name):
         """
-        Query analysis id by type. Internal function
-        :param analysis_type: name of the selected analysis type
-        :return: id of the type
+        Query lab id by name
+        :return: id of the lab
         """
         cur = connection.cursor()
         query = "SELECT id FROM laboratory WHERE name = (?)"
@@ -137,14 +140,18 @@ class DbConnector:
         return rows if rows is None else rows[0][0]
 
     def insert_lab(self, lab):
+        '''
+        Insert new lab
+        :param lab: name of the lab
+        '''
         if self.__select_lab_id_by_name is not None:
             return
 
         cur = self.connection.cursor()
-        query = f"INSERT INTO laboratory (name) VALUES ({lab})"
+        query = f"INSERT INTO laboratory (name) VALUES (?)"
 
         try:
-            cur.execute(query)
+            cur.execute(query, lab)
             print('Query executed successfully')
             self.connection.commit()
         except Error as e:
@@ -153,8 +160,8 @@ class DbConnector:
     @classmethod
     def __select_analysis_value_type_id_by_name(cls, connection, name):
         """
-        Query analysis id by type. Internal function
-        :param analysis_type: name of the selected analysis type
+        Query analysis_value_type id by name. Internal function
+        :param name: name of the selected analysis type
         :return: id of the type
         """
         cur = connection.cursor()
@@ -166,18 +173,23 @@ class DbConnector:
 
         except Error as e:
             print(f'The error {e} occurred')
-        # conn.commit()
+
         rows = cur.fetchone()
-        print(rows)
+        # print(rows)
         return rows if rows is None else rows[0][0]
 
     def insert_analysis_value_type(self, name):
-        if self.__select_analysis_value_type_id_by_name(self.connection, name)\
+        """
+        Insert analysis value type
+        :param name: name of the new analysis
+        :return:
+        """
+        if self.__select_analysis_value_type_id_by_name(self.connection, name) \
                 is not None:
             return
 
         cur = self.connection.cursor()
-        query = f"INSERT INTO laboratory (name) VALUES (?)"
+        query = f"INSERT INTO analysis_value_type (name) VALUES (?)"
 
         try:
             cur.execute(query, name)
@@ -187,9 +199,15 @@ class DbConnector:
             print(f'The error {e} occurred')
 
     def insert_analysis_value(self, data):
-        # ("laboratory_id", "analysis_value_type_id", "is_numeric",
-        # "result_text", "result_value", "unit", "limit_is_numeric",
-        # "reference", "upper_limit", "lower_limit", "time_stamp")
+        """
+        Insert analysis value with all additional info
+        :param data: format of data:
+        ("laboratory_id", "analysis_value_type_id", "is_numeric",
+        "result_text", "result_value", "unit", "limit_is_numeric",
+        "reference", "upper_limit", "lower_limit", "time_stamp")
+        :return:
+        """
+
         if data[2] == 0:
             if data[6] == 0:
                 query = f"INSERT INTO analysis_value (" \
@@ -227,22 +245,6 @@ class DbConnector:
 
     def delete(self, table, data):
         return
-
-
-db = DbConnector(DATABASE_PATH)
-
-data_sample_new = [("laboratory_name", "analysis_value_type_name", "is_numeric",
-                    "result_text", "result_value", "unit", "limit_is_numeric",
-                    "reference", "upper_limit", "lower_limit", "time_stamp"),
-                   (), ()
-                   ]
-
-data_sample_for_testing = \
-    [
-        ("днком", "ВПЧ типы 51,56", 0, "не обнаружено",
-         "LgВПЧ/10^5 эпит.клеток", 0, "не обнаружено", "2022-01-27"),
-        ("гемотест", "витамин А", 1, 0.5, "мкг/мл", 1, 0.2, 0.8, "2023-05-14")
-    ]
 
 # Нужно добавить таблицу для перевода единиц вида:
 # id_1 | id_2 | factor - необходимо заполнить заранее
