@@ -4,7 +4,7 @@ from sqlite3 import Error
 from accessify import protected, private
 
 
-#@private
+# @private
 class DbConnector:
 
     def __init__(self, path, tables_queries_list):
@@ -108,7 +108,7 @@ class DbConnector:
         query = "SELECT * FROM analysis_value WHERE analysis_type_id = (?)"
 
         try:
-            cur.execute(query, type_id)
+            cur.execute(query, (type_id,))
             print('Query executed successfully')
 
         except Error as e:
@@ -135,23 +135,21 @@ class DbConnector:
             print(f'The error {e} occurred')
         # conn.commit()
         rows = cur.fetchone()
-        print(rows)
-        return rows if rows is None else rows[0][0]
+        return rows if rows is None else rows[0]
 
     def insert_lab(self, lab):
         '''
         Insert new lab
         :param lab: name of the lab
         '''
-        if self.select_lab_id_by_name is not None:
+        if self.select_lab_id_by_name(lab) is not None:
             return
 
         cur = self.connection.cursor()
         query = f"INSERT INTO laboratory (name) VALUES (?)"
 
         try:
-            cur.execute(query, lab)
-            print('Query executed successfully')
+            cur.execute(query, (lab,))
             self.connection.commit()
         except Error as e:
             print(f'The error {e} occurred')
@@ -173,8 +171,7 @@ class DbConnector:
             print(f'The error {e} occurred')
 
         rows = cur.fetchone()
-        # print(rows)
-        return rows if rows is None else rows[0][0]
+        return rows if rows is None else rows[0]
 
     def insert_analysis_value_type(self, name):
         """
@@ -182,7 +179,7 @@ class DbConnector:
         :param name: name of the new analysis
         :return:
         """
-        if self.select_analysis_value_type_id_by_name(self.connection, name) \
+        if self.select_analysis_value_type_id_by_name(name) \
                 is not None:
             return
 
@@ -190,7 +187,7 @@ class DbConnector:
         query = f"INSERT INTO analysis_value_type (name) VALUES (?)"
 
         try:
-            cur.execute(query, name)
+            cur.execute(query, (name,))
             print('Query executed successfully')
             self.connection.commit()
         except Error as e:
@@ -206,8 +203,10 @@ class DbConnector:
         :return:
         """
 
+        # пока что без таблицы units
+
         if data[2] == 0:
-            if data[6] == 0:
+            if data[4] == 0:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_text, is_reference_numeric," \
@@ -220,7 +219,7 @@ class DbConnector:
                         f"upper_limit, lower_limit, time_stamp) " \
                         f"VALUES (?,?,?,?,?,?,?,?)"
         else:
-            if data[6] == 0:
+            if data[4] == 0:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_value, is_reference_numeric," \
@@ -237,7 +236,7 @@ class DbConnector:
         try:
             cur.execute(query, data)
             print('Query executed successfully')
-
+            self.connection.commit()
         except Error as e:
             print(f'The error {e} occurred')
 
