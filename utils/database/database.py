@@ -177,46 +177,71 @@ class DbConnector:
             return
 
         cur = self.connection.cursor()
-        query = f"INSERT INTO laboratory (name) VALUES ({name})"
+        query = f"INSERT INTO laboratory (name) VALUES (?)"
 
         try:
-            cur.execute(query, (id,))
+            cur.execute(query, name)
             print('Query executed successfully')
             self.connection.commit()
         except Error as e:
             print(f'The error {e} occurred')
 
     def insert_analysis_value(self, data):
-        # ["laboratory_id", "analysis_value_type_id", "is_numeric",
+        # ("laboratory_id", "analysis_value_type_id", "is_numeric",
         # "result_text", "result_value", "unit", "limit_is_numeric",
-        # "reference", "upper_limit", "lower_limit", "time_stamp"]
+        # "reference", "upper_limit", "lower_limit", "time_stamp")
+        if data[2] == 0:
+            if data[6] == 0:
+                query = f"INSERT INTO analysis_value (" \
+                        f"lab_id, analysis_type_id, is_result_numeric," \
+                        f"result_text, is_reference_numeric," \
+                        f"reference, time_stamp) " \
+                        f"VALUES (?,?,?,?,?,?,?)"
+            else:
+                query = f"INSERT INTO analysis_value (" \
+                        f"lab_id, analysis_type_id, is_result_numeric," \
+                        f"result_text, is_reference_numeric," \
+                        f"upper_limit, lower_limit, time_stamp) " \
+                        f"VALUES (?,?,?,?,?,?,?,?)"
+        else:
+            if data[6] == 0:
+                query = f"INSERT INTO analysis_value (" \
+                        f"lab_id, analysis_type_id, is_result_numeric," \
+                        f"result_value, is_reference_numeric," \
+                        f"reference, time_stamp) " \
+                        f"VALUES (?,?,?,?,?,?,?)"
+            else:
+                query = f"INSERT INTO analysis_value (" \
+                        f"lab_id, analysis_type_id, is_result_numeric," \
+                        f"result_value, is_reference_numeric," \
+                        f"upper_limit, lower_limit, time_stamp) " \
+                        f"VALUES (?,?,?,?,?,?,?,?)"
 
         cur = self.connection.cursor()
-        # query = f"INSERT INTO laboratory (name) VALUES ({name})"
-
         try:
-            # cur.execute(query, (id,))
+            cur.execute(query, data)
             print('Query executed successfully')
 
         except Error as e:
             print(f'The error {e} occurred')
+
     def delete(self, table, data):
         return
 
 
 db = DbConnector(DATABASE_PATH)
 
-data_sample_new = [["laboratory_name", "analysis_value_type_name", "is_numeric",
+data_sample_new = [("laboratory_name", "analysis_value_type_name", "is_numeric",
                     "result_text", "result_value", "unit", "limit_is_numeric",
-                    "reference", "upper_limit", "lower_limit", "time_stamp"],
-                   [], []
+                    "reference", "upper_limit", "lower_limit", "time_stamp"),
+                   (), ()
                    ]
 
 data_sample_for_testing = \
     [
-        ["днком", "ВПЧ типы 51,56", 0, "не обнаружено",
-         "LgВПЧ/10^5 эпит.клеток", 0, "не обнаружено", "2022-01-27"],
-        ["гемотест", "витамин А", 1, 0.5, "мкг/мл", 1, 0.2, 0.8, "2023-05-14"]
+        ("днком", "ВПЧ типы 51,56", 0, "не обнаружено",
+         "LgВПЧ/10^5 эпит.клеток", 0, "не обнаружено", "2022-01-27"),
+        ("гемотест", "витамин А", 1, 0.5, "мкг/мл", 1, 0.2, 0.8, "2023-05-14")
     ]
 
 # Нужно добавить таблицу для перевода единиц вида:
