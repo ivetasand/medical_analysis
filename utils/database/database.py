@@ -20,7 +20,6 @@ class DbConnector:
         self.connection = self.__create_connection(self.path)
         self.__setup_db(self.connection, tables_queries_list)
 
-
     @classmethod
     def __create_connection(cls, path):
         """
@@ -95,8 +94,15 @@ class DbConnector:
             logging.error(f'The error {e} occurred while selecting analysis'
                           f'info by type')
 
-        # conn.commit()
         rows = cur.fetchall()
+        for i in range(len(rows)):
+            lab_name = self.select_lab_name_by_id(rows[i][1])
+            unit_name = self.select_unit_name_by_id(rows[i][-1])
+            analysis_type_name = self.select_analysis_type_by_id(rows[i][2])
+
+            rows[i] = (
+                rows[i][0], lab_name, analysis_type_name, *rows[i][3:-1],
+                unit_name)
 
         return rows
 
@@ -115,6 +121,25 @@ class DbConnector:
         except Error as e:
             logging.error(f'The error {e} occurred while selecting lab_id by '
                           f'name')
+
+        rows = cur.fetchone()
+        return rows if rows is None else rows[0]
+
+    def select_lab_name_by_id(self, id):
+        """
+        Query lab name by id
+        :return: name of the lab
+        """
+        cur = self.connection.cursor()
+        query = "SELECT name FROM laboratory WHERE id = (?)"
+
+        try:
+            cur.execute(query, (id,))
+            logging.info('Selecting lab_name by id executed successfully')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting lab_name by '
+                          f'id')
 
         rows = cur.fetchone()
         return rows if rows is None else rows[0]
@@ -185,38 +210,36 @@ class DbConnector:
         :param data: format of data:
         ("laboratory_id", "analysis_value_type_id", "is_numeric",
         "result_text", "result_value", "unit", "limit_is_numeric",
-        "reference", "upper_limit", "lower_limit", "time_stamp")
+        "reference", "upper_limit", "lower_limit", "time_stamp", "unit_id")
         :return:
         """
-
-        # пока что без таблицы units
 
         if data[2] == 0:
             if data[4] == 0:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_text, is_reference_numeric," \
-                        f"reference, time_stamp) " \
-                        f"VALUES (?,?,?,?,?,?,?)"
+                        f"reference, time_stamp, unit_id) " \
+                        f"VALUES (?,?,?,?,?,?,?,?)"
             else:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_text, is_reference_numeric," \
-                        f"upper_limit, lower_limit, time_stamp) " \
-                        f"VALUES (?,?,?,?,?,?,?,?)"
+                        f"upper_limit, lower_limit, time_stamp, unit_id) " \
+                        f"VALUES (?,?,?,?,?,?,?,?,?)"
         else:
             if data[4] == 0:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_value, is_reference_numeric," \
-                        f"reference, time_stamp) " \
-                        f"VALUES (?,?,?,?,?,?,?)"
+                        f"reference, time_stamp, unit_id) " \
+                        f"VALUES (?,?,?,?,?,?,?,?)"
             else:
                 query = f"INSERT INTO analysis_value (" \
                         f"lab_id, analysis_type_id, is_result_numeric," \
                         f"result_value, is_reference_numeric," \
-                        f"upper_limit, lower_limit, time_stamp) " \
-                        f"VALUES (?,?,?,?,?,?,?,?)"
+                        f"upper_limit, lower_limit, time_stamp, unit_id) " \
+                        f"VALUES (?,?,?,?,?,?,?,?,?)"
 
         cur = self.connection.cursor()
         try:
@@ -227,10 +250,87 @@ class DbConnector:
             logging.error(f'The error {e} occurred while inserting analysis '
                           f'value')
 
+    def select_unit_id_by_name(self, name):
+        """
+        Query unit id by name
+        :param name:  of the selected unit
+        :return: id of the type
+        """
+        cur = self.connection.cursor()
+        query = "SELECT id FROM units WHERE name = (?)"
+
+        try:
+            cur.execute(query, (name,))
+            logging.info(
+                'Unit id was successfully selected by name')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting '
+                          f'unit id by name')
+
+        rows = cur.fetchone()
+        return rows if rows is None else rows[0]
+
+    def select_analysis_type_by_id(self, type_id):
+        """
+        Query analysis type name by id
+        :param type_id:of the selected unit
+        :return: id of the type
+        """
+        cur = self.connection.cursor()
+        query = "SELECT name FROM analysis_value_type WHERE id = (?)"
+
+        try:
+            cur.execute(query, (type_id,))
+            logging.info(
+                'Unit id was successfully selected by name')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting '
+                          f'unit id by name')
+
+        rows = cur.fetchone()
+        print(rows)
+        return rows if rows is None else rows[0]
+
+    def select_unit_name_by_id(self, unit_id):
+        """
+        Query unit name by id
+        :param id: of the selected unit
+        :return: name of the unit_id
+        """
+        cur = self.connection.cursor()
+        query = "SELECT name FROM units WHERE id = (?)"
+
+        try:
+            cur.execute(query, (unit_id,))
+            logging.info(
+                'Unit id was successfully selected by name')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting '
+                          f'unit id by name')
+
+        rows = cur.fetchone()
+        return rows if rows is None else rows[0]
+
+    def insert_unit(self, unit):
+        """
+        Insert new unit
+        :param unit: name of the unit
+        """
+        if self.select_unit_id_by_name(unit) is not None:
+            return
+
+        cur = self.connection.cursor()
+        query = f"INSERT INTO units (name) VALUES (?)"
+
+        try:
+            cur.execute(query, (unit,))
+            self.connection.commit()
+            logging.info('Unit was successfully added')
+        except Error as e:
+            logging.error(f'The error {e} occurred while adding new unit')
+
     def delete(self, table, data):
         return
-
-# Нужно добавить таблицу для перевода единиц вида:
-# id_1 | id_2 | factor - необходимо заполнить заранее
-# И таблицу с сопоставлением единиц измерения и id:
-# id | name
