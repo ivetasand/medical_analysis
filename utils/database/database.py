@@ -1,10 +1,10 @@
 import sqlite3
 from sqlite3 import Error
 
-from accessify import protected, private
+from accessify import private
 
 
-# @private
+@private
 class DbConnector:
 
     def __init__(self, path, tables_queries_list):
@@ -73,28 +73,6 @@ class DbConnector:
         # Создаем список кортежей вида [(name, abb), (name, abb)]
         rows = cur.fetchall()
         return rows
-
-    # @classmethod
-    # def __select_analysis_id_by_type(cls, connection, analysis_type):
-    #     """
-    #     query analysis id by type
-    #     :param analysis_type: name of the selected analysis type
-    #     :return: id of the type
-    #     """
-    #     cur = connection.cursor()
-    #     query = "SELECT id FROM analysis_value_type WHERE name = (?)"
-    #
-    #     try:
-    #         cur.execute(query, (analysis_type,))
-    #         print('Query executed successfully')
-    #
-    #     except Error as e:
-    #         print(f'The error {e} occurred')
-    #
-    #     # conn.commit()
-    #     rows = cur.fetchone()
-    #
-    #     return rows[0][0]
 
     def select_analysis_info_by_type(self, analysis_type):
         """
