@@ -4,8 +4,9 @@ from sqlite3 import Error
 from accessify import protected, private
 
 
-@private
+#@private
 class DbConnector:
+
     def __init__(self, path, tables_queries_list):
         """
         init database handler and editor
@@ -15,7 +16,6 @@ class DbConnector:
         self.path = path
         self.connection = self.__create_connection(self.path)
         self.__setup_db(self.connection, tables_queries_list)
-        self.__select_lab_id_by_name(self.connection, 1)
 
     @classmethod
     def __create_connection(cls, path):
@@ -74,41 +74,41 @@ class DbConnector:
         rows = cur.fetchall()
         return rows
 
-    @classmethod
-    def __select_analysis_id_by_type(cls, connection, analysis_type):
-        """
-        query analysis id by type
-        :param analysis_type: name of the selected analysis type
-        :return: id of the type
-        """
-        cur = connection.cursor()
-        query = "SELECT id FROM analysis_value_type WHERE name = (?)"
-
-        try:
-            cur.execute(query, (analysis_type,))
-            print('Query executed successfully')
-
-        except Error as e:
-            print(f'The error {e} occurred')
-
-        # conn.commit()
-        rows = cur.fetchone()
-
-        return rows[0][0]
+    # @classmethod
+    # def __select_analysis_id_by_type(cls, connection, analysis_type):
+    #     """
+    #     query analysis id by type
+    #     :param analysis_type: name of the selected analysis type
+    #     :return: id of the type
+    #     """
+    #     cur = connection.cursor()
+    #     query = "SELECT id FROM analysis_value_type WHERE name = (?)"
+    #
+    #     try:
+    #         cur.execute(query, (analysis_type,))
+    #         print('Query executed successfully')
+    #
+    #     except Error as e:
+    #         print(f'The error {e} occurred')
+    #
+    #     # conn.commit()
+    #     rows = cur.fetchone()
+    #
+    #     return rows[0][0]
 
     def select_analysis_info_by_type(self, analysis_type):
         """
         Query all data for every analysis of the selected type
-        :param analysis_type: id the selected analysis type
+        :param analysis_type: name of the selected analysis type
         :return: all information about selected analysis
         """
         cur = self.connection.cursor()
+        type_id = self.select_analysis_value_type_id_by_name(analysis_type)
+
         query = "SELECT * FROM analysis_value WHERE analysis_type_id = (?)"
-        analysis_type = self.__select_analysis_id_by_type(self.connection,
-                                                          analysis_type)
 
         try:
-            cur.execute(query, (analysis_type,))
+            cur.execute(query, type_id)
             print('Query executed successfully')
 
         except Error as e:
@@ -119,13 +119,12 @@ class DbConnector:
 
         return rows
 
-    @classmethod
-    def __select_lab_id_by_name(cls, connection, name):
+    def select_lab_id_by_name(self, name):
         """
         Query lab id by name
         :return: id of the lab
         """
-        cur = connection.cursor()
+        cur = self.connection.cursor()
         query = "SELECT id FROM laboratory WHERE name = (?)"
 
         try:
@@ -144,7 +143,7 @@ class DbConnector:
         Insert new lab
         :param lab: name of the lab
         '''
-        if self.__select_lab_id_by_name is not None:
+        if self.select_lab_id_by_name is not None:
             return
 
         cur = self.connection.cursor()
@@ -157,14 +156,13 @@ class DbConnector:
         except Error as e:
             print(f'The error {e} occurred')
 
-    @classmethod
-    def __select_analysis_value_type_id_by_name(cls, connection, name):
+    def select_analysis_value_type_id_by_name(self, name):
         """
         Query analysis_value_type id by name. Internal function
         :param name: name of the selected analysis type
         :return: id of the type
         """
-        cur = connection.cursor()
+        cur = self.connection.cursor()
         query = "SELECT id FROM analysis_value_type WHERE name = (?)"
 
         try:
@@ -184,7 +182,7 @@ class DbConnector:
         :param name: name of the new analysis
         :return:
         """
-        if self.__select_analysis_value_type_id_by_name(self.connection, name) \
+        if self.select_analysis_value_type_id_by_name(self.connection, name) \
                 is not None:
             return
 
