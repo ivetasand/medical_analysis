@@ -23,8 +23,8 @@ class DbInterface:
             if record[2] == 1:
                 self.db_connector.insert_unit(record[-1])
                 unit_id = self.db_connector.select_unit_id_by_name(record[-1])
-                # self.db_connector.insert_analysis_value_type(record[1])
-                new_set = (lab_id, analysis_value_type_id, *record[2:-1], unit_id)
+                new_set = (lab_id, analysis_value_type_id, *record[2:-1],
+                           unit_id)
             else:
                 new_set = (lab_id, analysis_value_type_id, *record[2:])
 

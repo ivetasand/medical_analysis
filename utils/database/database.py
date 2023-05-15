@@ -1,8 +1,6 @@
+import logging
 import sqlite3
 from sqlite3 import Error
-import logging
-
-from accessify import private
 
 
 class DbConnector:
@@ -125,7 +123,7 @@ class DbConnector:
         rows = cur.fetchone()
         return rows if rows is None else rows[0]
 
-    def select_lab_name_by_id(self, id):
+    def select_lab_name_by_id(self, lab_id):
         """
         Query lab name by id
         :return: name of the lab
@@ -134,7 +132,7 @@ class DbConnector:
         query = "SELECT name FROM laboratory WHERE id = (?)"
 
         try:
-            cur.execute(query, (id,))
+            cur.execute(query, (lab_id,))
             logging.info('Selecting lab_name by id executed successfully')
 
         except Error as e:
@@ -283,11 +281,11 @@ class DbConnector:
         try:
             cur.execute(query, (type_id,))
             logging.info(
-                'Unit id was successfully selected by name')
+                'Analysis type was successfully selected by name')
 
         except Error as e:
             logging.error(f'The error {e} occurred while selecting '
-                          f'unit id by name')
+                          f'analysis type by id')
 
         rows = cur.fetchone()
         print(rows)
@@ -296,7 +294,7 @@ class DbConnector:
     def select_unit_name_by_id(self, unit_id):
         """
         Query unit name by id
-        :param id: of the selected unit
+        :param unit_id: of the selected unit
         :return: name of the unit_id
         """
         cur = self.connection.cursor()
@@ -305,11 +303,11 @@ class DbConnector:
         try:
             cur.execute(query, (unit_id,))
             logging.info(
-                'Unit id was successfully selected by name')
+                'Unit name was successfully selected by id')
 
         except Error as e:
             logging.error(f'The error {e} occurred while selecting '
-                          f'unit id by name')
+                          f'unit name by id')
 
         rows = cur.fetchone()
         return rows if rows is None else rows[0]
