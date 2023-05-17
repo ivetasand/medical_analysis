@@ -105,5 +105,5 @@ class MsGemotest:
                 n += 2
         return (results)
 
-gemotest = MsGemotest()
+#gemotest = MsGemotest()
 #print(gemotest.authorization("93079180", "79267039809"))

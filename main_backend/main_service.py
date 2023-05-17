@@ -1,4 +1,5 @@
-import main_backend.med_service.dnkom
+from main_backend.med_service.dnkom import MsDnkom
+
 
 
 class Service:
@@ -7,10 +8,14 @@ class Service:
         return
 
     def get_med_service(self, service, login, password):
-        if (service == 'gemotest'):
-            main_backend.med_service.dnkom.MsDnkom.authorization(login, password)
-        elif (service == 'dnkom'):
-            main_backend.med_service.gemotest.authorization(login, password)
+        if (service == 'dnkom'):
+            service_dnkom = MsDnkom()
+            data_dnkom = service_dnkom.authorization(login, password)
+            return (service_dnkom.parse(data_dnkom))
+        elif (service == 'gemotest'):
+            service_gemotest = MsGemotest()
+            data_gemotest = service_gemotest.authorization(login, password)
+            return (service_gemotest.parse(data_gemotest))
         else:
             return (0)
 
