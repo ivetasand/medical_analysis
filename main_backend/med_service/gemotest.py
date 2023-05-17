@@ -19,7 +19,7 @@ class MsGemotest:
         session.headers.update({'User-Agent': user_agent_val})
 
         data = {"password": login,
-                "phone": phone
+                "phone": password
                 }
 
         response = session.post('https://api2.gemotest.ru/customer/v2/login', headers={
@@ -36,40 +36,74 @@ class MsGemotest:
         response = session.get("https://api2.gemotest.ru/customer/v2/orders_actual?limit=10&offset=0", headers={
             'Authorization': 'Bearer ' + access_token
         })
+        data = json.loads(response.text)
+        orders = data["result"]["orders"]
+        data_json = []
+        for order in orders:
+            data_json.append(order["date"])
+            order_num = order["order_num"]
+            http = 'https://api2.gemotest.ru/customer/v3/order/'
+            response = session.post(http + order_num)
+            response = session.get(http + order_num, headers={
+                'Authorization': 'Bearer ' + access_token
+            })
 
-        s = str(response.text)
-        i = s.find('"order_num":"')
-        order_num = ""
-        i += 13
-        while s[i] != '"':
-            order_num += s[i]
-            i += 1
-        http = 'https://api2.gemotest.ru/customer/v3/order/'
-        response = session.post(http + order_num)
+            s = str(response.text)
+            i = s.find('"services":[{"id":"')
+            services_id = ""
+            i += 20
+            while s[i] != '"':
+                services_id += s[i]
+                i += 1
+            http = 'https://api2.gemotest.ru/customer/v3/order/'
+            services_id = http + order_num + "/service/Macro+PRL_" + services_id
 
-        response = session.get(http + order_num, headers={
-            'Authorization': 'Bearer ' + access_token
-        })
-        s = str(response.text)
-        i = s.find('"services":[{"id":"')
-        services_id = ""
-        i += 20
-        while s[i] != '"':
-            services_id += s[i]
-            i += 1
-        http = 'https://api2.gemotest.ru/customer/v3/order/'
-        services_id = http + order_num + "/service/Macro+PRL_" + services_id
+            response = session.post(services_id)
+            response = session.get(services_id, headers={
+                'Authorization': 'Bearer ' + access_token
+            })
+            if (response.status_code < 200) | (response.status_code > 300):
+                return ('Error 2')
 
-        response = session.post(services_id)
-        response = session.get(services_id, headers={
-            'Authorization': 'Bearer ' + access_token
-        })
-        if (response.status_code < 200) | (response.status_code > 300):
-            return ('Error 2')
+            data_json.append(json.loads(response.content.decode("utf-8").replace("'", '"'))["tests"])
 
-        json_text = json.loads(response.content.decode("utf-8").replace("'", '"'))["tests"]
+        return (data_json)
 
-        return (json_text)
+    def parse(self, data_json):
+        results = []
+        i = 0
+        for n in range(0, len(data_json), 2):
+            result_analysis = []
+            result_analysis.append("гемотест")
+
+            for gemo_json in (data_json[n + 1]):
+                result_analysis.append(gemo_json["title"])
+
+                if gemo_json["unit"] == "":
+                    result_analysis.append(0)
+                    result_analysis.append(gemo_json["value"])
+                    result_analysis.append(0)
+                    result_analysis.append(gemo_json["reference_range"]["text"])
+                else:
+                    result_analysis.append(1)
+                    result_analysis.append(gemo_json["value"])
+                    if (result_analysis.append(gemo_json["reference_range"]["min_value"]) != "") & (
+                            result_analysis.append(gemo_json["reference_range"]["max_value"]) != ""):
+                        result_analysis.append(1)
+                        result_analysis.append(gemo_json["reference_range"]["min_value"])
+                        result_analysis.append(gemo_json["reference_range"]["max_value"])
+                    else:
+                        result_analysis.append(0)
+                        result_analysis.append(gemo_json["reference_range"]["text"])
+
+                result_analysis.append(list_of_gm1[n][:10])
+                if gemo_json["unit"] == "":
+                    result_analysis.append("")
+                else:
+                    result_analysis.append(gemo_json["unit"])
+                results.append(result_analysis)
+                n += 2
+        return (results)
 
 gemotest = MsGemotest()
-print(gemotest.authorization("93079180", "79267039809"))
+#print(gemotest.authorization("93079180", "79267039809"))
