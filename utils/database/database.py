@@ -288,7 +288,6 @@ class DbConnector:
                           f'analysis type by id')
 
         rows = cur.fetchone()
-        print(rows)
         return rows if rows is None else rows[0]
 
     def select_unit_name_by_id(self, unit_id):

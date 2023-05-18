@@ -51,11 +51,13 @@ data_sample_new = [("laboratory_name", "analysis_value_type_name", "is_numeric",
 
 data_sample_for_testing = \
     [
-        ("днком", "ВПЧ типы 51,56", 0, "не обнаружено",
-         0, "не обнаружено", "2022-01-27", "unit_name1"),
-        ("гемотест", "витамин А", 1, 0.5, 1, 0.2, 0.8, "2023-05-14",
-         "unit_name2")
+        ["днком", "ВПЧ типы 51,56", 0, "не обнаружено",
+         0, "не обнаружено", "2022-01-27", "unit_name1"],
+        ["гемотест", "витамин А", 1, 0.5, 1, 0.2, 0.8, "2023-05-14",
+         "unit_name2"]
     ]
+
+
 
 # ("laboratory_id", "analysis_value_type_id", "is_numeric",
 #         "result_text", "result_value", "unit", "limit_is_numeric",
