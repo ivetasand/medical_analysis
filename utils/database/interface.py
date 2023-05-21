@@ -81,9 +81,9 @@ data_sample_for_testing = \
          "unit_name2"]
     ]
 
-interface = DbInterface()
-print(interface.insert_data(data_sample_for_testing))
-print(interface.fetch_data())
-
-print(interface.fetch_data("ВПЧ типы 51,56"))
-print(interface.fetch_data("витамин А"))
+# interface = DbInterface()
+# print(interface.insert_data(data_sample_for_testing))
+# print(interface.fetch_data())
+#
+# print(interface.fetch_data("ВПЧ типы 51,56"))
+# print(interface.fetch_data("витамин А"))
