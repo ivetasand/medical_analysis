@@ -213,33 +213,21 @@ class DbConnector:
         "reference", "upper_limit", "lower_limit", "time_stamp", "unit_id")
         :return:
         """
+        print(self.select_analysis_info_by_type_name(
+            self.select_analysis_type_by_id(data[1])))
 
         if data[2] == 0:
-            if data[4] == 0:
-                query = f"INSERT INTO analysis_value (" \
-                        f"lab_id, analysis_type_id, is_result_numeric," \
-                        f"result_text, is_reference_numeric," \
-                        f"reference, time_stamp, unit_id) " \
-                        f"VALUES (?,?,?,?,?,?,?,?)"
-            else:
-                query = f"INSERT INTO analysis_value (" \
-                        f"lab_id, analysis_type_id, is_result_numeric," \
-                        f"result_text, is_reference_numeric," \
-                        f"upper_limit, lower_limit, time_stamp, unit_id) " \
-                        f"VALUES (?,?,?,?,?,?,?,?,?)"
+            query = f"INSERT INTO analysis_value (" \
+                    f"lab_id, analysis_type_id, is_result_numeric," \
+                    f"result_text," \
+                    f"reference, time_stamp) " \
+                    f"VALUES (?,?,?,?,?,?)"
         else:
-            if data[4] == 0:
-                query = f"INSERT INTO analysis_value (" \
-                        f"lab_id, analysis_type_id, is_result_numeric," \
-                        f"result_value, is_reference_numeric," \
-                        f"reference, time_stamp, unit_id) " \
-                        f"VALUES (?,?,?,?,?,?,?,?)"
-            else:
-                query = f"INSERT INTO analysis_value (" \
-                        f"lab_id, analysis_type_id, is_result_numeric," \
-                        f"result_value, is_reference_numeric," \
-                        f"upper_limit, lower_limit, time_stamp, unit_id) " \
-                        f"VALUES (?,?,?,?,?,?,?,?,?)"
+            query = f"INSERT INTO analysis_value (" \
+                    f"lab_id, analysis_type_id, is_result_numeric," \
+                    f"result_value," \
+                    f"lower_limit, upper_limit, time_stamp, unit_id) " \
+                    f"VALUES (?,?,?,?,?,?,?,?)"
 
         cur = self.connection.cursor()
         try:

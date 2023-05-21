@@ -16,6 +16,7 @@ def login_view(request):
             return render(request, 'login.html')
 
         # тут будем доставать инфу с сайта
+        # здесь будет инфа про сайт
 
     else:
         return render(request, 'login.html')

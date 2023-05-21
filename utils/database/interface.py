@@ -6,12 +6,38 @@ class DbInterface:
     def __init__(self):
         self.db_connector = DbConnector(DATABASE_PATH, TABLES_QUERIES_LIST)
 
+    @classmethod
+    def __check_if_record_in_db(cls, self, record):
+        """
+        internal function for checking if this analysis is already been added
+        :param self:
+        :param record: analysis record
+        :return: if record is in db
+        """
+        check = self.db_connector.select_analysis_info_by_type_name(
+            record[1])
+
+        check = [list(ele) for ele in check]
+        new_check = []
+        for check_item in check:
+            check_item = check_item[1:]
+            check_item = [i for i in check_item if i is not None]
+            new_check.append(check_item)
+
+        return record in new_check
+
     def insert_data(self, data):
         """
         insert data to database
-        :return:
+        :return: number of analysis that were inserted
         """
+        unique_analysis_count = 0
         for record in data:
+            if self.__check_if_record_in_db(self, record):
+                continue
+
+            unique_analysis_count += 1
+
             self.db_connector.insert_lab(record[0])
             lab_id = self.db_connector.select_lab_id_by_name(record[0])
 
@@ -29,7 +55,7 @@ class DbInterface:
                 new_set = (lab_id, analysis_value_type_id, *record[2:])
 
             self.db_connector.insert_analysis_value(new_set)
-        return True
+        return unique_analysis_count
 
     def fetch_data(self, desired_type=None):
         """
@@ -43,27 +69,21 @@ class DbInterface:
         return self.db_connector.select_analysis_info_by_type_name(desired_type)
 
 
-data_sample_new = [("laboratory_name", "analysis_value_type_name", "is_numeric",
-                    "result_text", "result_value", "unit", "limit_is_numeric",
-                    "reference", "upper_limit", "lower_limit", "time_stamp"),
-                   (), ()
-                   ]
-
 data_sample_for_testing = \
     [
-        ["днком", "ВПЧ типы 51,56", 0, "не обнаружено",
-         0, "не обнаружено", "2022-01-27", "unit_name1"],
-        ["гемотест", "витамин А", 1, 0.5, 1, 0.2, 0.8, "2023-05-14",
+        # [lab_name, analysis_type_name, is_result_numeric, result_text,
+        # reference_text, date]
+        ["днком", "ВПЧ типы 51,56", 0, "не обнаружено", "не обнаружено",
+         "2022-01-27"],
+        # [lab_name, analysis_type_name, is_result_numeric, result_value,
+        # reference_lower_value,reference_upper_value, date, units]
+        ["гемотест", "витамин А", 1, 0.5, 0.2, 0.8, "2023-05-14",
          "unit_name2"]
     ]
 
-
-# ("laboratory_id", "analysis_value_type_id", "is_numeric",
-#         "result_text", "result_value", "unit", "limit_is_numeric",
-#         "reference", "upper_limit", "lower_limit", "time_stamp")
-
 interface = DbInterface()
-interface.insert_data(data_sample_for_testing)
-# print(interface.fetch_data())
-print(interface.fetch_data("витамин А"))
+print(interface.insert_data(data_sample_for_testing))
+print(interface.fetch_data())
 
+print(interface.fetch_data("ВПЧ типы 51,56"))
+print(interface.fetch_data("витамин А"))
