@@ -1,24 +1,31 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'home' %}">Medical Analysis App</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'analysis_list' %}">Список анализов <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'login_page' %}">Зайти на ресурс <span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
-    </div>
+	<a class="navbar-brand" href="{% url 'home' %}">Каталог Анализов</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+	        data-target="#navbarNav"
+	        aria-controls="navbarNav" aria-expanded="false"
+	        aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav">
+			{% with request.resolver_match.url_name as url_name %}
+
+			<li class="{% if url_name == 'analysis_list' %}active{% endif %}">
+				<a class="nav-link" href="{% url 'analysis_list' %}">Список
+					анализов <span class="sr-only">(current)</span></a>
+			</li>
+			<li class="{% if url_name == 'login_page' %}active{% endif %}">
+				<a class="nav-link" href="{% url 'login_page' %}">Подключить
+					ресурс</a>
+			</li>
+			{% endwith %}
+		</ul>
+	</div>
 </nav>
 
 <div class="container-fluid mt-4">
-    {% block content %}{% endblock %}
+	{% block content %}{% endblock %}
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

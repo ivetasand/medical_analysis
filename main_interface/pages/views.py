@@ -19,5 +19,4 @@ def login_view(*args, **kwargs):
 
 
 def analysis_view(*args, **kwargs):
-
     return HttpResponse("<h1>Analysis view</h1>")

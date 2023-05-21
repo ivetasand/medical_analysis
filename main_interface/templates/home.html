@@ -1,27 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Hello world</h1>
-<p>This is a home template</p>
+<h1>Добро пожаловать в Каталог Анализов!</h1>
+<p>На этом локальном ресурсе вы сможете просматривать свои анализы сразу из
+	нескольких лабораторий</p>
+<div class="section-content"><p>Для просмотра списка доступных анализов нажмите
+	на вкладку <a href="{% url 'login_page' %}">списка анализов</a>.</p>
+	<div class="section-content"><p>Для подключения новой и доступной сейчас
+		лаборатории нажмите на вкладку <a href="{% url 'analysis_list' %}">подключения
+			ресурса</a>.</p>
 
-<p>
-	{{ my_text }}, {{ my_number }}
-
-</p>
-<ul>
-	<li>item 1</li>
-	<li>item 2</li>
-</ul>
-
-<ul>
-	{% for my_sub_item in my_list %}
-
-	{% if my_sub_item == 312 %}
-	<li>{{ my_sub_item|add:22 }}</li>
-	{% else %}
-	<li>{{ my_sub_item }}</li>
-	{% endif %}
-
-	{% endfor %}
-</ul>
-{% endblock %}
+		{% endblock %}

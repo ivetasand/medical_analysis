@@ -1,8 +1,20 @@
+from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponse
-from utils.database.interface import DbInterface
 
 
 # Create your views here.
 def login_view(request):
-    return render(request, "login.html", {})
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        print(username, password)
+
+        if username == "" or password == "":
+            messages.error(request, 'Введены неверные данные пользователя')
+            return render(request, 'login.html')
+
+        # тут будем доставать инфу с сайта
+
+    else:
+        return render(request, 'login.html')

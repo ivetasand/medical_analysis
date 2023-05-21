@@ -35,5 +35,4 @@ def analysis_list_view(request):
     # for testing
     interface = DbInterface()
     obj = interface.fetch_data()
-    print(obj)
     return render(request, "analysis/list.html", {'analysis_list': obj})

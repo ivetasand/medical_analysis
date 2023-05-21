@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Список анализов</h1>
-  <ul>
-  {% for analysis_type in analysis_list %}
-    <a href="{% url 'analysis_detail' analysis_type %}">{{ analysis_type| capfirst | linebreaks }}</a>
-  {% empty %}
-    <li>Нет доступных анализов.</li>
-  {% endfor %}
-  </ul>
+<h1>Список анализов</h1>
+<ul>
+	{% for analysis_type in analysis_list %}
+	<a href="{% url 'analysis_detail' analysis_type %}">
+		{{ analysis_type| capfirst | linebreaks }}</a>
+	{% empty %}
+	<li>Нет доступных анализов.</li>
+	{% endfor %}
+</ul>
 {% endblock %}
 
 
