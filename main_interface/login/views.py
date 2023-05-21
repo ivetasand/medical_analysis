@@ -7,8 +7,9 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        laboratory = request.POST['lab_id']
 
-        print(username, password)
+        print(laboratory, username, password)
 
         if username == "" or password == "":
             messages.error(request, 'Введены неверные данные пользователя')
