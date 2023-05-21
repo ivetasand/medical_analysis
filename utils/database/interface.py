@@ -40,7 +40,7 @@ class DbInterface:
         """
         if desired_type is None:
             return self.db_connector.select_all_analysis_types()
-        return self.db_connector.select_analysis_info_by_type(desired_type)
+        return self.db_connector.select_analysis_info_by_type_name(desired_type)
 
 
 data_sample_new = [("laboratory_name", "analysis_value_type_name", "is_numeric",
@@ -58,12 +58,12 @@ data_sample_for_testing = \
     ]
 
 
-
 # ("laboratory_id", "analysis_value_type_id", "is_numeric",
 #         "result_text", "result_value", "unit", "limit_is_numeric",
 #         "reference", "upper_limit", "lower_limit", "time_stamp")
 
 interface = DbInterface()
-# interface.insert_data(data_sample_for_testing)
+interface.insert_data(data_sample_for_testing)
 # print(interface.fetch_data())
 print(interface.fetch_data("витамин А"))
+

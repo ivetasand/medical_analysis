@@ -57,7 +57,7 @@ class DbConnector:
         :return: rows with name + abbreviation
         """
         cur = self.connection.cursor()
-        query = "SELECT name, abbreviation FROM analysis_value_type"
+        query = "SELECT name FROM analysis_value_type"
 
         try:
             cur.execute(query)
@@ -66,14 +66,16 @@ class DbConnector:
             logging.error(
                 f'The error {e} occurred while selecting all analysis types')
 
-        # коммит не нужен, т.к. бд никак не изменяется
-        # conn.commit()
-
         # Создаем список кортежей вида [(name, abb), (name, abb)]
         rows = cur.fetchall()
-        return rows
 
-    def select_analysis_info_by_type(self, analysis_type):
+        result = []
+        for row in rows:
+            result.append(row[0])
+
+        return result
+
+    def select_analysis_info_by_type_name(self, analysis_type):
         """
         Query all data for every analysis of the selected type
         :param analysis_type: name of the selected analysis type
