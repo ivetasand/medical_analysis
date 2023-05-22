@@ -7,7 +7,8 @@
 	<a href="{% url 'well_being_detail' well_being_type %}">
 		{{ well_being_type| capfirst | linebreaks }}</a>
 	{% empty %}
-	<li>Нет доступных показателей самочувствия.</li>
+	<a>Нет доступных показателей самочувствия.</a>
+	<a>Добавьте новые показатели.</a>
 	{% endfor %}
 </ul>
 {% endblock %}

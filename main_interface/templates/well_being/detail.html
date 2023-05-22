@@ -1,5 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>шажочки</h1>
+<h2>Шажочки</h2>
+
+<div id="chart_div"></div>
+<div class="chart-container" style="position: relative; height:50vh; width:100vw">
+    <canvas id="line-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('line-chart');
+  const dates_json = {{dates | safe}};
+  const steps_json = {{steps | safe}}
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: steps_json,
+      datasets: [{
+        data: dates_json ,
+        label: 'показатель'
+      }]
+    },
+    options: {
+      scales: {
+        x: [{
+          display: true,
+          type: 'time',
+          time: {
+            parser: 'YYYY-MM HH:mm',
+            tooltipFormat: 'll HH:mm',
+            unit: 'month',
+            unitStepSize: 1,
+            displayFormats: {
+              month: 'YYYY-MM'
+            }
+          }
+        }],
+      },
+      plugins: {
+        legend: {
+          display: false,
+          labels: {
+            color: 'rgb(100, 99, 132)'
+          }
+        }
+      }
+    }
+  });
+</script>
+
 {% endblock %}

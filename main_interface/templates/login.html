@@ -48,11 +48,31 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
 	        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	        crossorigin="anonymous"></script>
+</div>
 </body>
 
 
 <h1 style="white-space: pre-line"</h1>
 <h2 style="text-align:center;white-space: pre-line">Сбор шагов из Google Fit</h2>
+<body>
 
+<div class="box">
+	<h6>Чтобы собрать шаги вам достаточно нажать на кнопку и следовать инструкциям!</h6>
+
+</div>
+<div class="mx-auto" >
+<form action="" method="post" class="form-horizontal">
+<button type="submit" class="btn btn-primary">Собрать шаги</button>
+</form>
+</div>
+<button onclick="changeColor('green')">Green</button>
+<script>
+	function changeColor(color){
+        document.querySelector('.box').style.color = color;
+	}
+
+
+</script>
+</body>
 
 {% endblock %}

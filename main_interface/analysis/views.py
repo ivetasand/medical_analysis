@@ -115,6 +115,8 @@ def analysis_list_view(request):
              "2023-05-30"]
         ]
     interface.insert_analysis_data(data_sample_for_testing)
+    interface.insert_steps_data([['2023-04-11', 1234], ['2023-04-12', 432]])
 
     obj = interface.fetch_analysis_data()
+    print(obj)
     return render(request, "analysis/list.html", {'analysis_list': obj})
