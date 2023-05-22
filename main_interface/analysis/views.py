@@ -11,7 +11,7 @@ def analysis_detail_view(request, analysis_type):
     interface = DbInterface()
 
     # пока будем брать нулевой
-    obj = interface.fetch_data(analysis_type)
+    obj = interface.fetch_analysis_data(analysis_type)
     labs = [sublist[1] for sublist in obj]
 
     if obj[0][3]:
@@ -114,7 +114,7 @@ def analysis_list_view(request):
             ["днком", "какой-то ещё анализ", 1, "обнаружено", "не обнаружено",
              "2023-05-30"]
         ]
-    interface.insert_data(data_sample_for_testing)
+    interface.insert_analysis_data(data_sample_for_testing)
 
-    obj = interface.fetch_data()
+    obj = interface.fetch_analysis_data()
     return render(request, "analysis/list.html", {'analysis_list': obj})

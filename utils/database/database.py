@@ -319,5 +319,65 @@ class DbConnector:
         except Error as e:
             logging.error(f'The error {e} occurred while adding new unit')
 
+    def insert_steps(self, steps, steps_time):
+        """
+        Insert new steps
+        :return:
+        """
+
+        if self.select_steps_by_timestamp(steps_time) is not None:
+            return
+
+        cur = self.connection.cursor()
+        query = f"INSERT INTO steps_wellbeing (steps, timestamp) VALUES (?,?)"
+
+        try:
+            cur.execute(query, (steps, steps_time))
+            self.connection.commit()
+            logging.info('Steps were successfully added')
+        except Error as e:
+            logging.error(f'The error {e} occurred while adding steps')
+
+    def select_steps_by_timestamp(self, steps_time):
+        """
+        Query unit id by name
+        :param steps_time: desired date of steps
+        :return: number of steps for that day
+        """
+        cur = self.connection.cursor()
+        query = "SELECT steps FROM steps_wellbeing WHERE timestamp = (?)"
+
+        try:
+            cur.execute(query, (steps_time,))
+            logging.info(
+                'Steps number was successfully selected by timestamp')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting '
+                          f'number of steps by timestamp')
+
+        rows = cur.fetchone()
+        return rows if rows is None else rows[0]
+
+    def select_all_steps(self):
+        """
+        Query steps
+        :return: number of steps for all days
+        """
+        cur = self.connection.cursor()
+        query = "SELECT steps, timestamp FROM steps_wellbeing"
+
+        try:
+            cur.execute(query)
+            logging.info(
+                'Steps number was successfully selected')
+
+        except Error as e:
+            logging.error(f'The error {e} occurred while selecting '
+                          f'number of steps')
+
+        rows = cur.fetchall()
+        return rows
+
     def delete(self, table, data):
         return

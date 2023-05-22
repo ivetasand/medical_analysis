@@ -26,7 +26,7 @@ class DbInterface:
 
         return record in new_check
 
-    def insert_data(self, data):
+    def insert_analysis_data(self, data):
         """
         insert data to database
         :return: number of analysis that were inserted
@@ -57,7 +57,7 @@ class DbInterface:
             self.db_connector.insert_analysis_value(new_set)
         return unique_analysis_count
 
-    def fetch_data(self, desired_type=None):
+    def fetch_analysis_data(self, desired_type=None):
         """
         Select data from database
         :param desired_type by default selects all analysis types.
@@ -68,6 +68,31 @@ class DbInterface:
             return self.db_connector.select_all_analysis_types()
         return self.db_connector.select_analysis_info_by_type_name(desired_type)
 
+    def fetch_steps_data(self, desired_date=None):
+        """
+        Select data from database
+        :param desired_type by default selects all analysis types.
+        If equal to name of the analysis, then selects all data for analysis.
+        :return: data
+        """
+        if desired_date is None:
+            return self.db_connector.select_all_steps()
+        return self.db_connector.select_steps_by_timestamp(desired_date)
+
+    def insert_steps_data(self, data):
+        """
+        insert data to database
+        :return: number of analysis that were inserted
+        """
+        # data = [[date, numb], [date, numb]]
+        unique_steps_count = 0
+        for record in data:
+            if self.db_connector.select_steps_by_timestamp(record[0]):
+                continue
+
+            unique_steps_count += 1
+            self.db_connector.insert_steps(record[1], record[0])
+        return unique_steps_count
 
 data_sample_for_testing = \
     [
@@ -87,3 +112,5 @@ data_sample_for_testing = \
 #
 # print(interface.fetch_data("ВПЧ типы 51,56"))
 # print(interface.fetch_data("витамин А"))
+# print(interface.insert_steps_data([['2023-04-11', 1234], ['2023-04-12', 432]]))
+# print(interface.fetch_steps_data('2023-04-11'))
