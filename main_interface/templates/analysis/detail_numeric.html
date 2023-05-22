@@ -1,6 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>График для числового показателя: {{ analysis_type_name }}</h1>
+<h2>График для числового показателя: {{ analysis_type_name  }}</h2>
+<h3>Единицы измерения: {{units}}</h3>
+
 <div id="chart_div"></div>
+<div class="chart-container" style="position: relative; height:50vh; width:100vw">
+    <canvas id="line-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('line-chart');
+
+new new Chart(ctx,
+  {
+    type: 'line',
+    data: {
+      labels: {{dates | safe}},
+      datasets: [
+        {
+            data: {{results | safe}},
+  label: 'показатель'
+        },
+  {
+      data: {{lower_limits | safe}},
+	  label: 'нижний предел'},
+  {
+      data: {{upper_limits | safe}}, label: 'верхний предел'}
+  ]
+    },
+    options: {
+      scales: {
+        xAxes: [ {
+            display: true,
+            type: 'time',
+            time: {
+              parser: 'MM/DD/YYYY HH:mm',
+              tooltipFormat: 'll HH:mm',
+              unit: 'day',
+              unitStepSize: 1,
+              displayFormats: {
+                'day': 'MM/DD/YYYY'
+              }
+            }
+          }
+        ],
+      },
+	     plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    color: 'rgb(100, 99, 132)'
+                }
+            }
+        }
+    }
+  }
+);
+</script>
 {% endblock %}
