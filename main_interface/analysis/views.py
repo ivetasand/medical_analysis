@@ -12,6 +12,7 @@ def analysis_detail_view(request, analysis_type):
 
     # пока будем брать нулевой
     obj = interface.fetch_data(analysis_type)
+    labs = [sublist[1] for sublist in obj]
 
     if obj[0][3]:
         results = [sublist[5] for sublist in obj]
@@ -31,7 +32,8 @@ def analysis_detail_view(request, analysis_type):
             'lower_limits': lower_limits,
             'upper_limits': upper_limits,
             'dates': dates,
-            'months': months
+            'months': months,
+            'labs': labs
         }
 
         return render(request, "analysis/detail_numeric.html", context)
@@ -47,7 +49,8 @@ def analysis_detail_view(request, analysis_type):
             'results': results,
             'references': references,
             'dates': dates,
-            'months': months
+            'months': months,
+            'labs': labs
         }
         return render(request, "analysis/detail_text.html", context)
 
@@ -99,6 +102,10 @@ def analysis_list_view(request):
             ["гемотест", "витамин А", 1, 0.5, 0.2, 0.8, "2023-05-14",
              "unit_name2"],
             ["гемотест", "витамин А", 1, 0.6, 0.2, 0.8, "2023-06-14",
+             "unit_name2"],
+            ["гемотест", "витамин А", 1, 0.8, 0.2, 0.8, "2023-06-14",
+             "unit_name2"],
+            ["гемотест", "витамин А", 1, 0.1, 0.2, 0.8, "2023-06-14",
              "unit_name2"],
             ["днком", "ВПЧ типы 51,56", 0, "обнаружено", "не обнаружено",
              "2023-01-27"],

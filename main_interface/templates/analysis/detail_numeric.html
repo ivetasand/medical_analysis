@@ -13,22 +13,50 @@
 
 <script>
   const ctx = document.getElementById('line-chart');
+  const labs_json = {{labs | safe}};
+  const dates_json = {{dates | safe}};
+  const values_json = {{results | safe}};
+  const lower_json = {{lower_limits | safe}};
+  const upper_json = {{upper_limits | safe}};
 
-new new Chart(ctx,
+  const backgroundcolor = [];
+  for(i = 0; i < values_json.length; i++){
+	if (values_json[i] > upper_json[i] || values_json[i] < lower_json[i]){
+        backgroundcolor.push('red')
+	}
+    if (values_json[i] == upper_json[i] || values_json[i] == lower_json[i]){
+        backgroundcolor.push('pink')
+    }
+    else
+    {
+        backgroundcolor.push('green')
+	}
+  }
+
+  new Chart(ctx,
   {
     type: 'line',
     data: {
-      labels: {{dates | safe}},
+      labels: dates_json,
       datasets: [
         {
-            data: {{results | safe}},
-  label: 'результаты анализов'
+            data: values_json,
+  label: 'результат анализа',
+          borderColor: "#00BFFF",
+  backgroundColor: backgroundcolor,
+	        radius: 4
         },
   {
-      data: {{lower_limits | safe}},
-	  label: 'нижнее референсное значение'},
+      data: lower_json,
+	  label: 'нижнее референсное значение',
+        borderColor: "#FCB4D5",
+  backgroundColor: "#FCB4D5"},
+
   {
-      data: {{upper_limits | safe}}, label: 'верхнее референсное значение'}
+      data: upper_json,
+      label: 'верхнее референсное значение',
+    borderColor: "#FCB4D5",
+    backgroundColor: "#FCB4D5"}
   ]
     },
     options: {
@@ -54,6 +82,14 @@ new new Chart(ctx,
                 labels: {
                     color: 'rgb(100, 99, 132)'
                 }
+            },
+             tooltip: {
+            callbacks: {
+                beforeTitle: function(context){
+                    number_of = "=".repeat((`${labs_json[context[0].dataIndex]}`).length * 3.5);
+                    return `${number_of}\nЛаборатория: ${labs_json[context[0].dataIndex]}\n${number_of}\n`
+                },
+            }
             }
         }
     }
