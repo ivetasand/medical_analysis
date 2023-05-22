@@ -12,8 +12,11 @@
 			{% with request.resolver_match.url_name as url_name %}
 
 			<li class="{% if url_name == 'analysis_list' %}active{% endif %}">
-				<a class="nav-link" href="{% url 'analysis_list' %}">Список
-					анализов <span class="sr-only">(current)</span></a>
+				<a class="nav-link" href="{% url 'analysis_list' %}">Проверить
+					анализы<span class="sr-only">(current)</span></a>
+			</li>
+			<li class="{% if url_name == 'well_being_list' %}active{% endif %}">
+				<a class="nav-link" href="{% url 'well_being_list' %}">Проверить самочувствие и активность</a>
 			</li>
 			<li class="{% if url_name == 'login_page' %}active{% endif %}">
 				<a class="nav-link" href="{% url 'login_page' %}">Подключить

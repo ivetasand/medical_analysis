@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 from pages.views import home_view
-from analysis.views import analysis_detail_view
-from analysis.views import analysis_list_view
+from analysis.views import analysis_detail_view, analysis_list_view
 from login.views import login_view
+from well_being.views import well_being_list_view, well_being_detail_view
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -30,5 +30,8 @@ urlpatterns = [
     path('analysis_list/', analysis_list_view, name='analysis_list'),
     path('analysis_list/<str:analysis_type>/', analysis_detail_view,
          name='analysis_detail'),
-    path('login/', login_view, name='login_page')
+    path('login/', login_view, name='login_page'),
+    path('well_being/', well_being_list_view, name='well_being_list'),
+    path('well_being/<str:well_being_type>/', well_being_detail_view,
+         name='well_being_detail')
 ]

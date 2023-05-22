@@ -22,13 +22,13 @@ new new Chart(ctx,
       datasets: [
         {
             data: {{results | safe}},
-  label: 'показатель'
+  label: 'результаты анализов'
         },
   {
       data: {{lower_limits | safe}},
-	  label: 'нижний предел'},
+	  label: 'нижнее референсное значение'},
   {
-      data: {{upper_limits | safe}}, label: 'верхний предел'}
+      data: {{upper_limits | safe}}, label: 'верхнее референсное значение'}
   ]
     },
     options: {

@@ -1,6 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>График для текстового показателя: {{ analysis_type_name }}</h1>
+<h2>График для текстового показателя: {{ analysis_type_name }}</h2>
+
 <div id="chart_div"></div>
+<div class="chart-container" style="position: relative; height:50vh; width:100vw">
+    <canvas id="line-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('line-chart');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ dates | safe }},
+      datasets: [{
+        data: {{ results | safe }},
+        label: 'показатель'
+      }]
+    },
+    options: {
+      scales: {
+        x: [{
+          display: true,
+          type: 'time',
+          time: {
+            parser: 'YYYY-MM HH:mm',
+            tooltipFormat: 'll HH:mm',
+            unit: 'month',
+            unitStepSize: 1,
+            displayFormats: {
+              month: 'YYYY-MM'
+            }
+          }
+        }],
+        y: {
+          ticks: {
+              min: 0,
+            callback: function(value, index, values) {
+              if (value === 0) {
+                return 'Есть отклонения';
+              } else if (value === 1) {
+                return 'Нет отклонений';
+              }
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: 'rgb(100, 99, 132)'
+          }
+        }
+      }
+    }
+  });
+</script>
+
 {% endblock %}

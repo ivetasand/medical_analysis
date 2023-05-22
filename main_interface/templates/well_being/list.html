@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Показатели самочувствия</h1>
+<ul>
+	{% for well_being_type in well_being_list %}
+	<a href="{% url 'well_being_detail' well_being_type %}">
+		{{ well_being_type| capfirst | linebreaks }}</a>
+	{% empty %}
+	<li>Нет доступных показателей самочувствия.</li>
+	{% endfor %}
+</ul>
+{% endblock %}

@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'pages.apps.AppConfig',
     'analysis.apps.AppConfig',
-    'login.apps.AppConfig'
+    'login.apps.AppConfig',
+    'well_being.apps.AppConfig'
 ]
 
 MIDDLEWARE = [
