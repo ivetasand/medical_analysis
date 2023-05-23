@@ -14,6 +14,7 @@ class DbInterface:
         :param record: analysis record
         :return: if record is in db
         """
+        print(record)
         check = self.db_connector.select_analysis_info_by_type_name(
             record[1])
 

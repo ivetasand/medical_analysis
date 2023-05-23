@@ -6,6 +6,9 @@ from img2table.document import Image
 from img2table.ocr import TesseractOCR
 from datetime import datetime
 import pandas as pd
+import os
+
+
 class MsDnkom:
 
     def __init__(self):
@@ -90,19 +93,19 @@ class MsDnkom:
             http = 'http://results.dnkom.ru'
             href3 = http + href3
             response = session.post(href3)
-
+            print(response.content)
             if response.status_code == 200:
-                with open('temp' + str(i) + '.img', 'wb') as f:
+                with open('temp' + str(i) + '.jpeg', 'wb') as f:
                     f.write(response.content)
             else:
                 list_of_png.append('Error 3')
-            list_of_png.append('temp' + str(i) + '.img')
+            list_of_png.append('temp' + str(i) + '.jpeg')
 
     def parse(self, old_img):
         try:
             result = []
             img = cv2.imread(old_img)
-            string_img = pytesseract.image_to_string(img, lang = 'rus')
+            string_img = pytesseract.image_to_string(img, lang='rus')
             new_string = ''
 
             i = string_img.find("Репктрация биоматериала: ")
@@ -132,7 +135,8 @@ class MsDnkom:
 
             df = img_tables[0].df
             df = pd.DataFrame(df.values[1:], columns=df.values[0])
-            df.columns = ['Показатель', 'Результат', 'Ед. измерения', 'Реф. значения']
+            df.columns = ['Показатель', 'Результат', 'Ед. измерения',
+                          'Реф. значения']
             for i in range(0, len(df), 1):
                 list_results = []
                 list_results.append("днком")
@@ -182,7 +186,7 @@ class MsDnkom:
                 list_results.append(new_date_str)
                 result.append(list_results)
 
-            return(result)
+            return (result)
         except:
             return False
 # dnkom = MsDNKom()

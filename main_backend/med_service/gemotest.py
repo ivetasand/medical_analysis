@@ -9,7 +9,7 @@ class MsGemotest:
     # Если у пользователя нет анализов - Error 2
     # Если все успешно - возвращается список с анализами и количество необработанных анализов
     # Пример: [[гемотест, Витамин А], 2] - 1 успешный анализ и 2, которые не удалось обработать
-    def authorization(self, login, phone):
+    def authorization(self, login, password):
         user_agent_val = '"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15"'
         url = 'https://gemotest.ru/my/#/auth/loginin'
 
@@ -44,6 +44,7 @@ class MsGemotest:
                 'Authorization': 'Bearer ' + access_token
             })
         data = json.loads(response.text)
+        # print(response.text)
         orders = data["result"]["orders"]
         if orders is None:
             return "Error 2"
@@ -82,7 +83,7 @@ class MsGemotest:
         # print(data_json)
         return (data_json)
 
-    def parse(self, data_json):
+    def parse(self, old_list):
         try:
             results = []
             i = 0
