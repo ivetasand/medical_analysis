@@ -46,7 +46,7 @@ class MsGemotest:
         data = json.loads(response.text)
         # print(response.text)
         orders = data["result"]["orders"]
-        if orders is None:
+        if orders is None or orders == [] or orders == "":
             return "Error 2"
         data_json = []
         for order in orders:
