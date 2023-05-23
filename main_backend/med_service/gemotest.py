@@ -50,6 +50,8 @@ class MsGemotest:
             return "Error 2"
         data_json = []
         for order in orders:
+            if order['order_status'] == 'Предзаказ' or order['order_status'] == '\u041f\u0440\u0435\u0434\u0437\u0430\u043a\u0430\u0437':
+                continue
             order_num = order["order_num"]
             http = 'https://api2.gemotest.ru/customer/v3/order/'
             response = session.post(http + order_num)
@@ -94,7 +96,8 @@ class MsGemotest:
                 for gemo_json in (old_list[n + 1]):
                     list_results.append(gemo_json["title"])
 
-                    if gemo_json["reference_range"]["min_value"] == "":
+                    if (gemo_json["reference_range"]["max_value"] == "") & (
+                            gemo_json["reference_range"]["min_value"] == ""):
                         list_results.append(0)
                         list_results.append(gemo_json["value"])
                         list_results.append(
@@ -102,12 +105,9 @@ class MsGemotest:
                     else:
                         list_results.append(1)
                         list_results.append(gemo_json["value"])
-                        if (list_results.append(gemo_json["reference_range"][
-                                                    "min_value"]) != "") & (
-                                list_results.append(
-                                        gemo_json["reference_range"][
-                                            "max_value"]) != ""):
-                            list_results.append(1)
+                        if (gemo_json["reference_range"]["max_value"] == "") & (
+                                gemo_json["reference_range"][
+                                    "min_value"] == ""):
                             list_results.append(
                                 gemo_json["reference_range"]["min_value"])
                             list_results.append(
