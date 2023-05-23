@@ -7,6 +7,10 @@ class MsGemotest:
     def __init__(self):
         return
 
+    # Авторизация на Гемотест. Входные данные: логин и номер телефона.
+    # Если пользователь ввел неправильно пароль или логин - Error 1
+    # Если у пользователя нет данных или что-то другое иное - Error 2
+    # Если все успешно - возвращается список
     def authorization(self, login, phone):
         user_agent_val = '"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15"'
         url = 'https://gemotest.ru/my/#/auth/loginin'
@@ -19,7 +23,7 @@ class MsGemotest:
         session.headers.update({'User-Agent': user_agent_val})
 
         data = {"password": login,
-                "phone": password
+                "phone": phone
                 }
 
         response = session.post('https://api2.gemotest.ru/customer/v2/login', headers={
@@ -27,7 +31,7 @@ class MsGemotest:
         }, data=data)
 
         if response.status_code != 200:
-            return ('Error')
+            return ('Error 1')
         access_token = json.loads(response.content.decode("utf-8").replace("'", '"'))["access_token"]
         response = session.get("https://gemotest.ru/my/", headers={
             'Authorization': 'Bearer ' + access_token
@@ -72,36 +76,41 @@ class MsGemotest:
     def parse(self, data_json):
         results = []
         i = 0
-        for n in range(0, len(data_json), 2):
-            result_analysis = []
-            result_analysis.append("гемотест")
+        for n in range(0, len(list_of_gm1), 2):
+            list_results = []
+            list_results.append("гемотест")
 
-            for gemo_json in (data_json[n + 1]):
-                result_analysis.append(gemo_json["title"])
+            for gemo_json in (list_of_gm1[n + 1]):
+                list_results.append(gemo_json["title"])
 
                 if gemo_json["unit"] == "":
-                    result_analysis.append(0)
-                    result_analysis.append(gemo_json["value"])
-                    result_analysis.append(0)
-                    result_analysis.append(gemo_json["reference_range"]["text"])
+                    list_results.append(0)
+                    list_results.append(gemo_json["value"])
+                    list_results.append(0)
+                    list_results.append(gemo_json["reference_range"]["text"])
                 else:
-                    result_analysis.append(1)
-                    result_analysis.append(gemo_json["value"])
-                    if (result_analysis.append(gemo_json["reference_range"]["min_value"]) != "") & (
-                            result_analysis.append(gemo_json["reference_range"]["max_value"]) != ""):
-                        result_analysis.append(1)
-                        result_analysis.append(gemo_json["reference_range"]["min_value"])
-                        result_analysis.append(gemo_json["reference_range"]["max_value"])
+                    list_results.append(1)
+                    list_results.append(gemo_json["value"])
+                    if (list_results.append(gemo_json["reference_range"][
+                                                "min_value"]) != "") & (
+                            list_results.append(gemo_json["reference_range"][
+                                                    "max_value"]) != ""):
+                        list_results.append(1)
+                        list_results.append(
+                            gemo_json["reference_range"]["min_value"])
+                        list_results.append(
+                            gemo_json["reference_range"]["max_value"])
                     else:
-                        result_analysis.append(0)
-                        result_analysis.append(gemo_json["reference_range"]["text"])
+                        list_results.append(0)
+                        list_results.append(
+                            gemo_json["reference_range"]["text"])
 
-                result_analysis.append(list_of_gm1[n][:10])
+                list_results.append(list_of_gm1[n][:10])
                 if gemo_json["unit"] == "":
-                    result_analysis.append("")
+                    list_results.append("")
                 else:
-                    result_analysis.append(gemo_json["unit"])
-                results.append(result_analysis)
+                    list_results.append(gemo_json["unit"])
+                results.append(list_results)
                 n += 2
         return (results)
 

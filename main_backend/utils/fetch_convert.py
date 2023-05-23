@@ -1,5 +1,4 @@
 
-
 class ImgToJson:
     @classmethod
     def convert(cls, fpath):
@@ -10,3 +9,4 @@ class PDFToJson:
     @classmethod
     def convert(cls, fpath):
         raise
+
