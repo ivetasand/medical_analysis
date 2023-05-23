@@ -1,9 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
-import pytesseract
-import cv2
+import json
 class MsGemotest:
-
     def __init__(self):
         return
 
@@ -23,28 +20,34 @@ class MsGemotest:
         session.headers.update({'User-Agent': user_agent_val})
 
         data = {"password": login,
-                "phone": phone
+                "phone": password
                 }
 
-        response = session.post('https://api2.gemotest.ru/customer/v2/login', headers={
-            'User-Agent': user_agent_val
-        }, data=data)
+        response = session.post('https://api2.gemotest.ru/customer/v2/login',
+                                headers={
+                                    'User-Agent': user_agent_val
+                                }, data=data)
 
         if response.status_code != 200:
             return ('Error 1')
-        access_token = json.loads(response.content.decode("utf-8").replace("'", '"'))["access_token"]
+        access_token = \
+        json.loads(response.content.decode("utf-8").replace("'", '"'))[
+            "access_token"]
         response = session.get("https://gemotest.ru/my/", headers={
             'Authorization': 'Bearer ' + access_token
         })
 
-        response = session.get("https://api2.gemotest.ru/customer/v2/orders_actual?limit=10&offset=0", headers={
-            'Authorization': 'Bearer ' + access_token
-        })
+        response = session.get(
+            "https://api2.gemotest.ru/customer/v2/orders_actual?limit=10&offset=0",
+            headers={
+                'Authorization': 'Bearer ' + access_token
+            })
         data = json.loads(response.text)
         orders = data["result"]["orders"]
+        if orders is None:
+            return "Error 2"
         data_json = []
         for order in orders:
-            data_json.append(order["date"])
             order_num = order["order_num"]
             http = 'https://api2.gemotest.ru/customer/v3/order/'
             response = session.post(http + order_num)
@@ -54,65 +57,77 @@ class MsGemotest:
 
             s = str(response.text)
             i = s.find('"services":[{"id":"')
-            services_id = ""
-            i += 20
-            while s[i] != '"':
-                services_id += s[i]
-                i += 1
-            http = 'https://api2.gemotest.ru/customer/v3/order/'
-            services_id = http + order_num + "/service/Macro+PRL_" + services_id
+            while i != -1:
+                data_json.append(order["date"])
+                services_id = ""
+                i += 20
+                while s[i] != '"':
+                    services_id += s[i]
+                    i += 1
+                http = 'https://api2.gemotest.ru/customer/v3/order/'
+                services_id = http + order_num + "/service/Macro+PRL_" + services_id
+                response = session.post(services_id)
+                response = session.get(services_id, headers={
+                    'Authorization': 'Bearer ' + access_token
+                })
+                if (response.status_code < 200) | (response.status_code > 300):
+                    return ('Error 2')
+                data_json.append(json.loads(
+                    response.content.decode("utf-8").replace("'", '"'))[
+                                     "tests"])
+                s = s[i:]
+                i = s.find('"service":{"id":"')
 
-            response = session.post(services_id)
-            response = session.get(services_id, headers={
-                'Authorization': 'Bearer ' + access_token
-            })
-            if (response.status_code < 200) | (response.status_code > 300):
-                return ('Error 2')
-
-            data_json.append(json.loads(response.content.decode("utf-8").replace("'", '"'))["tests"])
-
+        # print(data_json)
         return (data_json)
 
     def parse(self, data_json):
-        results = []
-        i = 0
-        for n in range(0, len(list_of_gm1), 2):
-            list_results = []
-            list_results.append("гемотест")
+        try:
+            results = []
+            i = 0
+            for n in range(0, len(old_list), 2):
+                list_results = []
+                list_results.append("гемотест")
 
-            for gemo_json in (list_of_gm1[n + 1]):
-                list_results.append(gemo_json["title"])
+                for gemo_json in (old_list[n + 1]):
+                    list_results.append(gemo_json["title"])
 
-                if gemo_json["unit"] == "":
-                    list_results.append(0)
-                    list_results.append(gemo_json["value"])
-                    list_results.append(0)
-                    list_results.append(gemo_json["reference_range"]["text"])
-                else:
-                    list_results.append(1)
-                    list_results.append(gemo_json["value"])
-                    if (list_results.append(gemo_json["reference_range"][
-                                                "min_value"]) != "") & (
-                            list_results.append(gemo_json["reference_range"][
-                                                    "max_value"]) != ""):
-                        list_results.append(1)
-                        list_results.append(
-                            gemo_json["reference_range"]["min_value"])
-                        list_results.append(
-                            gemo_json["reference_range"]["max_value"])
-                    else:
+                    if gemo_json["reference_range"]["min_value"] == "":
                         list_results.append(0)
+                        list_results.append(gemo_json["value"])
                         list_results.append(
                             gemo_json["reference_range"]["text"])
-
-                list_results.append(list_of_gm1[n][:10])
-                if gemo_json["unit"] == "":
-                    list_results.append("")
-                else:
-                    list_results.append(gemo_json["unit"])
-                results.append(list_results)
-                n += 2
-        return (results)
+                    else:
+                        list_results.append(1)
+                        list_results.append(gemo_json["value"])
+                        if (list_results.append(gemo_json["reference_range"][
+                                                    "min_value"]) != "") & (
+                                list_results.append(
+                                        gemo_json["reference_range"][
+                                            "max_value"]) != ""):
+                            list_results.append(1)
+                            list_results.append(
+                                gemo_json["reference_range"]["min_value"])
+                            list_results.append(
+                                gemo_json["reference_range"]["max_value"])
+                            if gemo_json["unit"] != "":
+                                list_results.append("")
+                            else:
+                                list_results.append(gemo_json["unit"])
+                        else:
+                            list_results.append(0)
+                            list_results.append(
+                                gemo_json["reference_range"]["text"])
+                            if gemo_json["unit"] != "":
+                                list_results.append("")
+                            else:
+                                list_results.append(gemo_json["unit"])
+                    list_results.append(old_list[n][:10])
+                    results.append(list_results)
+                    n += 2
+            return (results)
+        except:
+            return False
 
 #gemotest = MsGemotest()
 #print(gemotest.authorization("93079180", "79267039809"))
