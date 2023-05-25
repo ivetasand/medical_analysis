@@ -1,7 +1,7 @@
-from werkzeug.local import LocalProxy
-from .integration import FlaskIntegration, token_update
-from .apps import FlaskOAuth1App, FlaskOAuth2App
-from ..base_client import BaseOAuth, OAuthError
+from packages.local import LocalProxy
+from packages.integration import FlaskIntegration, token_update
+from packages.apps import FlaskOAuth1App, FlaskOAuth2App
+from packages.base_client import BaseOAuth, OAuthError
 
 
 class OAuth(BaseOAuth):

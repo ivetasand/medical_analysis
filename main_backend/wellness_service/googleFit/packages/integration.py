@@ -1,6 +1,6 @@
 from flask import current_app
 from flask.signals import Namespace
-from ..base_client import FrameworkIntegration
+from main_backend.wellness_service.googleFit.packages.base_client import FrameworkIntegration
 
 _signal = Namespace()
 #: signal when token is updated

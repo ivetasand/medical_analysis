@@ -1,6 +1,6 @@
 from flask import g, redirect, request, session
 from ..requests_client import OAuth1Session, OAuth2Session
-from ..base_client import (
+from main_backend.wellness_service.googleFit.packages.base_client import (
     BaseApp, OAuthError,
     OAuth1Mixin, OAuth2Mixin, OpenIDMixin,
 )
