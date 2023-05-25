@@ -3,10 +3,10 @@ import webbrowser
 import threading
 import signal
 
-class GoogleFit:
+class MSGoogleFit:
     def __init__(self):
         return
-    def auto_googlefit(self, googleFit):
+    def authorization(self, googleFit):
         def open_browser():
             url = "http://127.0.0.1:5000/login"
             webbrowser.open(url, new=1)
@@ -32,4 +32,5 @@ class GoogleFit:
                 else:
                     print("Произошла ошибка:", str(e))
 
-    auto_googlefit(123)
+service_Googlefit = MSGoogleFit()
+service_Googlefit.authorization(123)
