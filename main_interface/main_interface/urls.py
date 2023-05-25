@@ -20,8 +20,8 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from pages.views import home_view
-from analysis.views import analysis_detail_view, analysis_list_view
-from login.views import login_view
+from analysis.views import analysis_detail_view, analysis_list_view, analysis_edit_view
+from login.views import login_view,  login_data_post_view
 from well_being.views import well_being_list_view, well_being_detail_view
 
 urlpatterns = [
@@ -37,4 +37,6 @@ urlpatterns = [
     path('well_being/<str:well_being_type>/', well_being_detail_view,
          name='well_being_detail'),
     path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico"))),
+    path('login_data_post/', login_data_post_view, name='login_data_post'),
+    path('analysis_edit/', analysis_edit_view, name='analysis_edit'),
 ]

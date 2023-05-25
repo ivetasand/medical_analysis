@@ -72,7 +72,7 @@ class DbInterface:
     def fetch_steps_data(self, desired_date=None):
         """
         Select data from database
-        :param desired_type by default selects all analysis types.
+        :param desired_date: by default selects all steps
         If equal to name of the analysis, then selects all data for analysis.
         :return: data
         """

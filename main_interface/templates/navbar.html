@@ -22,6 +22,9 @@
 				<a class="nav-link" href="{% url 'login_page' %}">Подключить
 					ресурс</a>
 			</li>
+			<li class="{% if url_name == 'analysis_edit' %}active{% endif %}">
+				<a class="nav-link" href="{% url 'analysis_edit' %}">Ручное внесение</a>
+			</li>
 			{% endwith %}
 		</ul>
 	</div>

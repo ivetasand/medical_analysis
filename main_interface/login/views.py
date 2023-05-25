@@ -1,4 +1,7 @@
+import json
+
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render
 from main_backend.main_service import Service
 from utils.database.interface import DbInterface
@@ -10,7 +13,6 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
         laboratory = request.POST['lab_id']
-
 
         if username == "" or password == "":
             messages.error(request, 'Введены неверные данные пользователя')
@@ -26,3 +28,11 @@ def login_view(request):
         return render(request, 'login.html')
     else:
         return render(request, 'login.html')
+
+
+def login_data_post_view(request):
+    if request.method == 'POST':
+        subject = request.body
+        subject_data = json.loads(subject)
+        return JsonResponse(subject_data, status=200)
+    return JsonResponse(status=400)

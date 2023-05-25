@@ -2,8 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import pytesseract
 import cv2
-from img2table.document import Image
+# from img2table.document import Image
+from PIL import Image
 from img2table.ocr import TesseractOCR
+import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd
 import os

@@ -120,3 +120,10 @@ def analysis_list_view(request):
     obj = interface.fetch_analysis_data()
     print(obj)
     return render(request, "analysis/list.html", {'analysis_list': obj})
+
+
+def analysis_edit_view(request):
+    interface = DbInterface()
+    interface.insert_analysis_data('')
+    interface.insert_steps_data('')
+    return render(request, "analysis/edit.html", {})
