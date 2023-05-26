@@ -7,15 +7,24 @@ def analysis_detail_view(request, analysis_type):
 
     obj = interface.fetch_analysis_data(analysis_type)
     labs = [sublist[1] for sublist in obj]
+    # print(obj)
 
     if obj[0][3]:
-        results = [sublist[5] for sublist in obj]
-        lower_limits = [sublist[7] for sublist in obj]
-        upper_limits = [sublist[8] for sublist in obj]
-        dates = [sublist[9] for sublist in obj]
+        obj.sort(key=lambda x: x[9])
+
+        results = [sublist[5] for sublist in obj if sublist[5] is not None]
+        lower_limits = [sublist[7] for sublist in obj if sublist[5] is not None]
+        upper_limits = [sublist[8] for sublist in obj if sublist[5] is not None]
+        dates = [sublist[9] for sublist in obj if sublist[5] is not None]
         results_dates_lower_upper = zip(results, dates, lower_limits,
                                         upper_limits)
         months = __for_better_dates_display(dates)
+
+        # print(f'Это даты {dates}, {len(dates)}')
+        # print(f'Это резы {results}, {len(results)}')
+        # print(f'Это рефы вернх {upper_limits}, {len(upper_limits)}')
+        # print(f'Это рефы нижн {lower_limits}, {len(lower_limits)}')
+        # print(f'Это лабы {labs}, {len(labs)}')
 
         context = {
             'analysis_type_name': obj[0][2],
@@ -32,11 +41,17 @@ def analysis_detail_view(request, analysis_type):
         return render(request, "analysis/detail_numeric.html", context)
 
     else:
+        obj.sort(key=lambda x: x[9])
+
         results = [1 if sublist[4] == sublist[6] else 0 for sublist in obj]
         references = [sublist[6] for sublist in obj]
         dates = [sublist[9] for sublist in obj]
         months = __for_better_dates_display(dates)
-        print(dates)
+        # print(dates)
+        # print(f'Это даты {dates}, {len(dates)}')
+        # print(f'Это резы {results}, {len(results)}')
+        # print(f'Это рефы {references}, {len(references)}')
+        # print(f'Это лабы {labs}, {len(labs)}')
         context = {
             'analysis_type_name': obj[0][2],
             'results': results,
@@ -83,7 +98,8 @@ def __for_better_dates_display(dates):
 def analysis_list_view(request):
     interface = DbInterface()
     obj = interface.fetch_analysis_data()
-    return render(request, "analysis/list.html", {'analysis_list': obj.sort()})
+    obj.sort()
+    return render(request, "analysis/list.html", {'analysis_list': obj})
 
 
 def analysis_edit_view(request):

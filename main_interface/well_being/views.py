@@ -10,7 +10,7 @@ def well_being_list_view(request):
 def well_being_detail_view(request, well_being_type):
     interface = DbInterface()
     data = interface.fetch_steps_data()
-
+    data.sort(key=lambda x: x[1])
     dates = [sublist[0] for sublist in data]
     steps = [sublist[1] for sublist in data]
 
