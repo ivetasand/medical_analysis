@@ -95,13 +95,14 @@ class MsDnkom:
             http = 'http://results.dnkom.ru'
             href3 = http + href3
             response = session.post(href3)
-            print(response.content)
+            #print(response.content)
             if response.status_code == 200:
                 with open('temp' + str(i) + '.jpeg', 'wb') as f:
                     f.write(response.content)
             else:
                 list_of_png.append('Error 3')
-            list_of_png.append('temp' + str(i) + '.jpeg')
+            list_of_png.append(str('temp' + str(i) + '.jpeg'))
+        return (list_of_png[0])
 
     def parse(self, old_img):
         try:
@@ -128,6 +129,7 @@ class MsDnkom:
 
             ocr = TesseractOCR(n_threads=1, lang="rus+eng")
             img = Image(old_img)
+            #print(img)
             # Table identification
             img_tables = img.extract_tables(ocr=ocr,
                                             implicit_rows=False,
@@ -191,5 +193,6 @@ class MsDnkom:
             return (result)
         except:
             return False
-# dnkom = MsDNKom()
-# print(dnkom.authorization("89264702030", "Asdfghq1"))
+#dnkom = MsDnkom()
+#print(dnkom.parse(dnkom.authorization("89264702030", "Asdfghq1")))
+#print(dnkom.parse("temp0.jpeg"))

@@ -96,40 +96,37 @@ class MsGemotest:
                 for gemo_json in (old_list[n + 1]):
                     list_results.append(gemo_json["title"])
 
-                    if (gemo_json["reference_range"]["max_value"] == "") & (
-                            gemo_json["reference_range"]["min_value"] == ""):
+                    if (int(gemo_json["value"])).isnumeric():
+                        list_results.append(1)
+                        if (int(gemo_json["value"])).isnumeric() & (int(gemo_json["reference_range"]["max_value"])).isnumeric()
+                                & (int(gemo_json["reference_range"]["min_value"])).isnumeric():
+                            list_results.append(gemo_json["value"])
+                            if (gemo_json["reference_range"]["max_value"] != "") & (
+                                    gemo_json["reference_range"][
+                                        "min_value"] != ""):
+                                list_results.append(
+                                    gemo_json["reference_range"]["min_value"])
+                                list_results.append(
+                                    gemo_json["reference_range"]["max_value"])
+                                list_results.append(gemo_json["unit"])
+                            else:
+                                list_results.append("")
+                                list_results.append("")
+                                list_results.append(old_list[n][:10])
+                                list_results.append(gemo_json["unit"])
+                        else:
+                            return False
+                    else:
                         list_results.append(0)
                         list_results.append(gemo_json["value"])
                         list_results.append(
                             gemo_json["reference_range"]["text"])
-                    else:
-                        list_results.append(1)
-                        list_results.append(gemo_json["value"])
-                        if (gemo_json["reference_range"]["max_value"] == "") & (
-                                gemo_json["reference_range"][
-                                    "min_value"] == ""):
-                            list_results.append(
-                                gemo_json["reference_range"]["min_value"])
-                            list_results.append(
-                                gemo_json["reference_range"]["max_value"])
-                            if gemo_json["unit"] != "":
-                                list_results.append("")
-                            else:
-                                list_results.append(gemo_json["unit"])
-                        else:
-                            list_results.append(0)
-                            list_results.append(
-                                gemo_json["reference_range"]["text"])
-                            if gemo_json["unit"] != "":
-                                list_results.append("")
-                            else:
-                                list_results.append(gemo_json["unit"])
-                    list_results.append(old_list[n][:10])
+                        list_results.append(old_list[n][:10])
                     results.append(list_results)
                     n += 2
             return (results)
         except:
             return False
 
-#gemotest = MsGemotest()
-#print(gemotest.authorization("93079180", "79267039809"))
+gemotest = MsGemotest()
+print(gemotest.parse(gemotest.authorization("93079180", "79267039809")))
