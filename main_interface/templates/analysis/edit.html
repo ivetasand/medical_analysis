@@ -10,6 +10,11 @@
 	<li>Нет доступных анализов.</li>
 	{% endfor %}
 </ul>
+
+<form action="{% url form_handle %}" method="POST">{% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Submit</button>
+</form>
 {% endblock %}
 
 

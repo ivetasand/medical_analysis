@@ -1,13 +1,13 @@
 from main_backend.med_service.DNKom import MsDnkom
 from main_backend.med_service.gemotest import MsGemotest
-
+from main_backend.wellness_service.googleFit.googleFit import MSGoogleFit
 
 class Service:
 
     def __init__(self):
         return
 
-    def get_med_service(self, service, login, password):
+    def get_med_service(self, service, login=None, password=None):
         if (service == 'dnkom'):
             service_dnkom = MsDnkom()
             data_dnkom = service_dnkom.authorization(login, password)
@@ -55,5 +55,8 @@ class Service:
                             continue
             result_list.append(count_error)
             return (result_list)
+        elif service == 'google_fit':
+            service_googlefit = MSGoogleFit()
+            service_googlefit.authorization()
         else:
             return (0)

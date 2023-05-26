@@ -20,8 +20,8 @@ class MsGemotest:
         session.headers.update({'Referer': url})
         session.headers.update({'User-Agent': user_agent_val})
 
-        data = {"password": login,
-                "phone": password
+        data = {"password": password,
+                "phone": login
                 }
 
         response = session.post('https://api2.gemotest.ru/customer/v2/login',

@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+
+# from .forms import MyForm
 from utils.database.interface import DbInterface
 import json
 
@@ -123,7 +125,15 @@ def analysis_list_view(request):
 
 
 def analysis_edit_view(request):
-    interface = DbInterface()
-    interface.insert_analysis_data('')
-    interface.insert_steps_data('')
+    # form = MyForm()
+    # if request.method == 'POST':
+    #     form = MyForm(request.POST)
+    #     if form.is_valid():
+    #         cd = form.cleaned_data
+    #         # now in the object cd, you have the form as a dictionary.
+    #         a = cd.get('a')
+
+    # blah blah encode parameters for a url blah blah
+    # and make another post request
+    # edit : added ": "  after    if request.method=='POST'
     return render(request, "analysis/edit.html", {})

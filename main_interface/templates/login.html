@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% csrf_token %}
 <body>
 
 <div class="mx-auto" style="width: 500px" ;>
@@ -25,7 +25,7 @@
 			<input type="password" class="form-control" name="password"
 			       id="password" placeholder="Введите пароль">
 		</div>
-		<button type="submit" class="btn btn-primary">Собрать данные</button>
+		<button type="submit" class="btn btn-primary" name="get_analysis_button">Собрать данные</button>
 		<br/>
 	</form>
 
@@ -58,21 +58,16 @@
 
 <div class="box">
 	<h6>Чтобы собрать шаги вам достаточно нажать на кнопку и следовать инструкциям!</h6>
+	<h6>После прохождения авторизации обновите эту страницу.</h6>
+
 
 </div>
 <div class="mx-auto" >
 <form action="" method="post" class="form-horizontal">
-<button type="submit" class="btn btn-primary">Собрать шаги</button>
+<button type="submit" class="btn btn-primary" name="get_steps_data">Собрать шаги</button>
 </form>
 </div>
-<button onclick="changeColor('green')">Green</button>
-<script>
-	function changeColor(color){
-        document.querySelector('.box').style.color = color;
-	}
 
-
-</script>
 </body>
 
 {% endblock %}
