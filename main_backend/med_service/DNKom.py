@@ -2,13 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import pytesseract
 import cv2
-# from img2table.document import Image
-from PIL import Image
+from img2table.document import Image
+#from PIL import Image
 from img2table.ocr import TesseractOCR
-import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd
 import os
+
 
 
 class MsDnkom:
@@ -109,6 +109,7 @@ class MsDnkom:
             result = []
             img = cv2.imread(old_img)
             string_img = pytesseract.image_to_string(img, lang='rus')
+            print(string_img)
             new_string = ''
 
             i = string_img.find("Репктрация биоматериала: ")
@@ -160,7 +161,6 @@ class MsDnkom:
                     list_results.append(0)
 
                 list_results.append(df.loc[i, 'Результат'])
-                list_results.append(df.loc[i, 'Ед. измерения'])
 
                 # разбиваем строку на подстроки по символу "-"
                 parts = df.loc[i, 'Реф. значения'].split("-")
@@ -180,19 +180,20 @@ class MsDnkom:
                         # извлекаем первые две подстроки
                         first_part = parts[0][:-1]
                         second_part = parts[1][1:]
-                        list_results.append(1)
                         list_results.append(df.loc[i, 'Реф. значения'])
                         list_results.append(first_part.replace(",", "."))
                         list_results.append(second_part.replace(",", "."))
+                        list_results.append(new_date_str)
+                        list_results.append(df.loc[i, 'Ед. измерения'])
                     else:
-                        list_results.append(0)
                         list_results.append(df.loc[i, 'Реф. значения'])
-                list_results.append(new_date_str)
+                        list_results.append(new_date_str)
+
                 result.append(list_results)
 
             return (result)
         except:
             return False
-#dnkom = MsDnkom()
-#print(dnkom.parse(dnkom.authorization("89264702030", "Asdfghq1")))
+dnkom = MsDnkom()
+print(dnkom.parse(dnkom.authorization("89264702030", "Asdfghq1")))
 #print(dnkom.parse("temp0.jpeg"))
