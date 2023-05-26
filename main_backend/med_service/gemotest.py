@@ -44,7 +44,6 @@ class MsGemotest:
                 'Authorization': 'Bearer ' + access_token
             })
         data = json.loads(response.text)
-        # print(response.text)
         orders = data["result"]["orders"]
         if orders is None or orders == [] or orders == "":
             return "Error 2"
@@ -82,61 +81,59 @@ class MsGemotest:
                 s = s[i:]
                 i = s.find('"service":{"id":"')
 
-        print(data_json)
         return (data_json)
 
     def parse(self, old_list):
         results = []
+        try:
+            for n in range(0, len(old_list), 2):
 
-        for n in range(0, len(old_list), 2):
-            for gemo_json in (old_list[n + 1]):
-                list_results = []
-                list_results.append("гемотест")
-                list_results.append(gemo_json["title"])
-                gemo_json_value = gemo_json["value"]
+                for gemo_json in (old_list[n + 1]):
+                    list_results = []
+                    list_results.append("гемотест")
+                    list_results.append(gemo_json["title"])
+                    gemo_json_value = gemo_json["value"]
 
-                if gemo_json_value.endswith("-"):
-                    gemo_json_value = gemo_json_value[:-2]
+                    if gemo_json_value.endswith("-"):
+                        gemo_json_value = gemo_json_value[:-2]
 
-                if is_numeric(gemo_json_value):
-                    list_results.append(1)
-                    if (is_numeric(gemo_json_value)) & (
-                            is_numeric(
-                                gemo_json["reference_range"]["max_value"])) & (
-                            is_numeric(
-                                gemo_json["reference_range"]["min_value"])):
-                        list_results.append(gemo_json_value)
-                        if (gemo_json["reference_range"]["max_value"] != "") & (
-                                gemo_json["reference_range"][
-                                    "min_value"] != ""):
-                            list_results.append(
-                                gemo_json["reference_range"]["min_value"])
-                            list_results.append(
-                                gemo_json["reference_range"]["max_value"])
+                    if is_numeric(gemo_json_value):
+                        list_results.append(1)
+                        if (is_numeric(gemo_json_value)) & (
+                                is_numeric(
+                                    gemo_json["reference_range"]["max_value"])) & (
+                                is_numeric(
+                                    gemo_json["reference_range"]["min_value"])):
+                            list_results.append(gemo_json_value)
+                            if (gemo_json["reference_range"]["max_value"] != "") & (
+                                    gemo_json["reference_range"][
+                                        "min_value"] != ""):
+                                list_results.append(
+                                    gemo_json["reference_range"]["min_value"])
+                                list_results.append(
+                                    gemo_json["reference_range"]["max_value"])
+                                list_results.append(old_list[n][:10])
+                                list_results.append(gemo_json["unit"])
+                        else:
+                            list_results.append(gemo_json_value)
+                            list_results.append("")
+                            list_results.append("")
                             list_results.append(old_list[n][:10])
                             list_results.append(gemo_json["unit"])
-                    else:
-                        list_results.append(gemo_json_value)
-                        list_results.append("")
-                        list_results.append("")
-                        list_results.append(old_list[n][:10])
-                        list_results.append(gemo_json["unit"])
 
-                else:
-                    list_results.append(0)
-                    list_results.append(gemo_json_value)
-                    list_results.append(gemo_json["reference_range"]["text"])
-                    list_results.append(old_list[n][:10])
-                results.append(list_results)
-            n += 2
-        return (results)
+                    else:
+                        list_results.append(0)
+                        list_results.append(gemo_json_value)
+                        list_results.append(gemo_json["reference_range"]["text"])
+                        list_results.append(old_list[n][:10])
+                    results.append(list_results)
+                n += 2
+            return (results)
+        except:
+            return []
 def is_numeric(value):
     try:
         float(value)
         return True
     except ValueError:
         return False
-
-gemotest = MsGemotest()
-print(gemotest.parse(gemotest.authorization("79777024573","9sxpfwxf")))
-#print(gemotest.parse(gemotest.authorization("79267039809","93079180")))

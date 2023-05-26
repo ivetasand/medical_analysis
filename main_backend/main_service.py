@@ -20,12 +20,13 @@ class Service:
 
             for i in range(0, len(data_dnkom)):
                 parse_data = service_dnkom.parse(data_dnkom[i])
-                if parse_data != False:
-                    result_list = result_list + (
-                        service_dnkom.parse(data_dnkom[i]))
-                else:
+                if parse_data == []:
                     count_error += 1
                     continue
+                else:
+                    result_list = result_list + (
+                        service_dnkom.parse(data_dnkom[i]))
+
             result_list.append(count_error)
             return (result_list)
         elif service == 'gemotest':
@@ -37,19 +38,17 @@ class Service:
                     (data_gemotest == "Error 1" or data_gemotest == "Error 2"):
                 return data_gemotest
             for i in range(0, len(data_gemotest)):
-                # print(data_gemotest[i])
                 if data_gemotest[i] == 'Error 3':
                     count_error += 1
                     continue
 
             parse_data = service_gemotest.parse(data_gemotest)
             for i in range(len(parse_data)):
-                if parse_data[i] != False:
-                    # print(f"Parse data: {parse_data}")
-                    result_list.append(parse_data[i])
-                else:
+                if parse_data[i] == []:
                     count_error += 1
                     continue
+                else:
+                    result_list.append(parse_data[i])
             result_list.append(count_error)
             return (result_list)
         elif service == 'google_fit':
