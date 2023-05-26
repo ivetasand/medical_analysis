@@ -37,7 +37,7 @@ class Service:
                     (data_gemotest == "Error 1" or data_gemotest == "Error 2"):
                 return data_gemotest
             for i in range(0, len(data_gemotest)):
-                print(data_gemotest[i])
+                # print(data_gemotest[i])
                 if data_gemotest[i] == 'Error 3':
                     count_error += 1
                     continue
@@ -45,7 +45,7 @@ class Service:
             parse_data = service_gemotest.parse(data_gemotest)
             for i in range(len(parse_data)):
                 if parse_data[i] != False:
-                    print(f"Parse data: {parse_data}")
+                    # print(f"Parse data: {parse_data}")
                     result_list.append(parse_data[i])
                 else:
                     count_error += 1
