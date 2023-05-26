@@ -83,7 +83,7 @@ def __for_better_dates_display(dates):
 def analysis_list_view(request):
     interface = DbInterface()
     obj = interface.fetch_analysis_data()
-    return render(request, "analysis/list.html", {'analysis_list': obj})
+    return render(request, "analysis/list.html", {'analysis_list': obj.sort()})
 
 
 def analysis_edit_view(request):

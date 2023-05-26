@@ -28,7 +28,6 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('home/', home_view, name='home'),
     path('admin/', admin.site.urls),
-    # path('analysis_detail/', analysis_detail_view),
     path('analysis_list/', analysis_list_view, name='analysis_list'),
     path('analysis_list/<str:analysis_type>/', analysis_detail_view,
          name='analysis_detail'),
