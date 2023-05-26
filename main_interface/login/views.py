@@ -37,6 +37,8 @@ def login_view(request):
         return HttpResponseRedirect('http://127.0.0.1:7000/login/')
 
     elif request.method == 'POST' and 'get_steps_data' in request.POST:
+        service = Service()
+        service.get_med_service('google_fit')
         return HttpResponseRedirect('http://127.0.0.1:7000/login/')
     else:
         return render(request, 'login.html', {})
