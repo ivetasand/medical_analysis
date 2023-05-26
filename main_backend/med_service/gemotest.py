@@ -88,7 +88,6 @@ class MsGemotest:
     def parse(self, old_list):
         try:
             results = []
-            i = 0
             for n in range(0, len(old_list), 2):
                 list_results = []
                 list_results.append("гемотест")
@@ -96,7 +95,7 @@ class MsGemotest:
                 for gemo_json in (old_list[n + 1]):
                     list_results.append(gemo_json["title"])
 
-                    if (int(gemo_json["value"])).isnumeric():
+                    if (gemo_json["value"]).isnumeric():
                         list_results.append(1)
                         if (int(gemo_json["value"])).isnumeric() & (int(gemo_json["reference_range"]["max_value"])).isnumeric() & (int(gemo_json["reference_range"]["min_value"])).isnumeric():
                             list_results.append(gemo_json["value"])
@@ -127,5 +126,5 @@ class MsGemotest:
         except:
             return False
 
-gemotest = MsGemotest()
-print(gemotest.parse(gemotest.authorization("93079180", "79267039809")))
+# gemotest = MsGemotest()
+# print(gemotest.parse(gemotest.authorization("79267039809","93079180")))

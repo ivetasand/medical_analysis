@@ -15,8 +15,7 @@ class DbInterface:
         :return: if record is in db
         """
         print(record)
-        check = self.db_connector.select_analysis_info_by_type_name(
-            record[1])
+        check = self.db_connector.select_analysis_info_by_type_name(record[1])
 
         check = [list(ele) for ele in check]
         new_check = []

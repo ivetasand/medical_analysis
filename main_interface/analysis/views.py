@@ -1,18 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
-# from .forms import MyForm
 from utils.database.interface import DbInterface
-import json
 
 
-# Create your views here.
 def analysis_detail_view(request, analysis_type):
-    # Эта штука должна создаваться вообще где-то в одном месте, не?
-    # for testing
     interface = DbInterface()
 
-    # пока будем брать нулевой
     obj = interface.fetch_analysis_data(analysis_type)
     labs = [sublist[1] for sublist in obj]
 
@@ -24,7 +16,6 @@ def analysis_detail_view(request, analysis_type):
         results_dates_lower_upper = zip(results, dates, lower_limits,
                                         upper_limits)
         months = __for_better_dates_display(dates)
-        # results_dates_lower_upper_json = json.dumps(results_dates_lower_upper)
 
         context = {
             'analysis_type_name': obj[0][2],
@@ -90,37 +81,8 @@ def __for_better_dates_display(dates):
 
 
 def analysis_list_view(request):
-    # for testing
     interface = DbInterface()
-
-    data_sample_for_testing = \
-        [
-            # [lab_name, analysis_type_name, is_result_numeric, result_text,
-            # reference_text, date]
-            ["днком", "ВПЧ типы 51,56", 0, "не обнаружено", "не обнаружено",
-             "2022-01-27"],
-            # [lab_name, analysis_type_name, is_result_numeric, result_value,
-            # reference_lower_value,reference_upper_value, date, units]
-            ["гемотест", "витамин А", 1, 0.5, 0.2, 0.8, "2023-05-14",
-             "unit_name2"],
-            ["гемотест", "витамин А", 1, 0.6, 0.2, 0.8, "2023-06-14",
-             "unit_name2"],
-            ["гемотест", "витамин А", 1, 0.8, 0.2, 0.8, "2023-06-14",
-             "unit_name2"],
-            ["гемотест", "витамин А", 1, 0.1, 0.2, 0.8, "2023-06-14",
-             "unit_name2"],
-            ["днком", "ВПЧ типы 51,56", 0, "обнаружено", "не обнаружено",
-             "2023-01-27"],
-            ["днком", "какой-то ещё анализ", 0, "обнаружено", "не обнаружено",
-             "2023-05-27"],
-            ["днком", "какой-то ещё анализ", 1, "обнаружено", "не обнаружено",
-             "2023-05-30"]
-        ]
-    interface.insert_analysis_data(data_sample_for_testing)
-    interface.insert_steps_data([['2023-04-11', 1234], ['2023-04-12', 432]])
-
     obj = interface.fetch_analysis_data()
-    print(obj)
     return render(request, "analysis/list.html", {'analysis_list': obj})
 
 

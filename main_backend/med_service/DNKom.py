@@ -102,14 +102,14 @@ class MsDnkom:
             else:
                 list_of_png.append('Error 3')
             list_of_png.append(str('temp' + str(i) + '.jpeg'))
-        return (list_of_png[0])
+        return (list_of_png)
 
     def parse(self, old_img):
         try:
             result = []
             img = cv2.imread(old_img)
             string_img = pytesseract.image_to_string(img, lang='rus')
-            print(string_img)
+            # print(string_img)
             new_string = ''
 
             i = string_img.find("Репктрация биоматериала: ")
@@ -194,6 +194,6 @@ class MsDnkom:
             return (result)
         except:
             return False
-dnkom = MsDnkom()
-print(dnkom.parse(dnkom.authorization("89264702030", "Asdfghq1")))
+# dnkom = MsDnkom()
+# print(dnkom.parse(dnkom.authorization("89264702030", "Asdfghq1")))
 #print(dnkom.parse("temp0.jpeg"))
