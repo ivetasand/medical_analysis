@@ -98,8 +98,7 @@ class MsGemotest:
 
                     if (int(gemo_json["value"])).isnumeric():
                         list_results.append(1)
-                        if (int(gemo_json["value"])).isnumeric() & (int(gemo_json["reference_range"]["max_value"])).isnumeric()
-                                & (int(gemo_json["reference_range"]["min_value"])).isnumeric():
+                        if (int(gemo_json["value"])).isnumeric() & (int(gemo_json["reference_range"]["max_value"])).isnumeric() & (int(gemo_json["reference_range"]["min_value"])).isnumeric():
                             list_results.append(gemo_json["value"])
                             if (gemo_json["reference_range"]["max_value"] != "") & (
                                     gemo_json["reference_range"][

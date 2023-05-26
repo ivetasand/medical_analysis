@@ -82,9 +82,13 @@ def authorize():
     # and set ur own data in the session not the profile from google
     session['profile'] = user_info
     result_list = authorization(token['access_token'])
-    print(result_list)
+    result_dict = {}
+    for i in range (len(result_list)):
+        result_dict[i] = result_list[i]
+
+    data = json.dumps(result_dict)
     r = requests.post("http://127.0.0.1:7000/login_data_post/",
-                      data={b'1'}, headers={'User-Agent': 'some cool user-agent'})
+                      data=data, headers={'User-Agent': 'some cool user-agent'})
     print('oh no')
     # session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
     return redirect('/')
@@ -129,7 +133,7 @@ def authorization(token):
     }
     r = requests.post(url, headers=headers, data=json.dumps(body))
     res = r.content.decode("utf-8")
-    parse(res)
+    return parse(res)
 
     # print(requests.get("https://www.googleapis.com/fitness/v1/users/me/sessions",
     #                    headers=headers).text)
@@ -160,7 +164,6 @@ def parse(res):
             if intVal != "":
                 result.append(intVal)
                 result_googlefit.append(result)
-
     new_lst = [sublst for sublst in result_googlefit if sublst]
-    # print(result_googlefit)
+
     return (new_lst)
