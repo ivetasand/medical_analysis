@@ -37,7 +37,7 @@ google = oauth.register(
 @login_required
 def hello_world():
     # return redirect('/terminate')
-    return 'hello'
+    return 'Вы были успешно авторизованы! Пожалуйста, вернитесь в приложение.'
 
 
 @login_login
