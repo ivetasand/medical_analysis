@@ -1,5 +1,7 @@
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from utils.database.interface import DbInterface
+from .forms import TextForm, NumericForm
 
 
 def analysis_detail_view(request, analysis_type):
@@ -102,7 +104,7 @@ def analysis_list_view(request):
     return render(request, "analysis/list.html", {'analysis_list': obj})
 
 
-def analysis_edit_view(request):
+def analysis_numeric_edit_view(request):
     # form = MyForm()
     # if request.method == 'POST':
     #     form = MyForm(request.POST)
@@ -111,7 +113,49 @@ def analysis_edit_view(request):
     #         # now in the object cd, you have the form as a dictionary.
     #         a = cd.get('a')
 
-    # blah blah encode parameters for a url blah blah
-    # and make another post request
-    # edit : added ": "  after    if request.method=='POST'
-    return render(request, "analysis/edit.html", {})
+    if request.method == 'POST':
+        form = NumericForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data.get('analysis_name'))
+            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_edit/')
+    else:
+        form = NumericForm()
+
+    context = {
+        'form_key': form
+    }
+    return render(request, "analysis/edit/edit.html", context)
+
+
+def analysis_text_edit_view(request):
+    # form = MyForm()
+    # if request.method == 'POST':
+    #     form = MyForm(request.POST)
+    #     if form.is_valid():
+    #         cd = form.cleaned_data
+    #         # now in the object cd, you have the form as a dictionary.
+    #         a = cd.get('a')
+
+    if request.method == 'POST':
+        form = TextForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data.get('analysis_name'))
+            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_edit/')
+    else:
+        form = TextForm()
+
+    context = {
+        'form_key': form
+    }
+    return render(request, "analysis/edit/edit.html", context)
+
+
+def choice_view(request):
+    if request.method == 'POST' and 'numeric_choice' in request.POST:
+        return HttpResponseRedirect(
+            'http://127.0.0.1:7000/analysis_edit/numeric/')
+    elif request.method == 'POST' and 'text_choice' in request.POST:
+        return HttpResponseRedirect(
+            'http://127.0.0.1:7000/analysis_edit/text/')
+
+    return render(request, "analysis/edit/choose.html", {})
