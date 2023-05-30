@@ -13,14 +13,20 @@
 <script>
   const ctx = document.getElementById('line-chart');
   const labs_json = {{labs | safe}};
-  const values = {{results | safe}}
+  const results_json = {{results | safe}}
+  const dates_json = {{ dates | safe }};
+  const parseddates = [];
+  dates_json.forEach(parsedFunction);
+  function parsedFunction(date){
+      parseddates.push(date.split('-').reverse().join('-'));
+  }
 
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: {{ dates | safe }},
+      labels: parseddates,
       datasets: [{
-        data: {{ results | safe }},
+        data: results_json,
         label: 'показатель'
       }]
     },
@@ -30,14 +36,9 @@
           display: true,
           type: 'time',
           time: {
-            parser: 'YYYY-MM HH:mm',
-            tooltipFormat: 'll HH:mm',
-            unit: 'month',
-            unitStepSize: 1,
-            displayFormats: {
-              month: 'YYYY-MM'
+              unit: 'day',
+                // parser: 'yyyy-mm-dd'
             }
-          }
         }],
         y: {
           ticks: {

@@ -19,6 +19,12 @@
   const lower_json = {{lower_limits | safe}};
   const upper_json = {{upper_limits | safe}};
 
+  const parseddates = [];
+  dates_json.forEach(parsedFunction);
+  function parsedFunction(date){
+      parseddates.push(date.split('-').reverse().join('-'));
+  }
+
   const backgroundcolor = [];
   for(i = 0; i < values_json.length; i++){
 	if (values_json[i] > upper_json[i] || values_json[i] < lower_json[i]){
@@ -37,7 +43,7 @@
   {
     type: 'line',
     data: {
-      labels: dates_json,
+      labels: parseddates,
       datasets: [
         {
             data: values_json,
@@ -65,13 +71,8 @@
             display: true,
             type: 'time',
             time: {
-              parser: 'MM/DD/YYYY HH:mm',
-              tooltipFormat: 'll HH:mm',
               unit: 'day',
-              unitStepSize: 1,
-              displayFormats: {
-                'day': 'MM/DD/YYYY'
-              }
+                // parser: 'yyyy-mm-dd'
             }
           }
         ],
