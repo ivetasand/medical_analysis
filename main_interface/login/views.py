@@ -31,8 +31,9 @@ def login_view(request):
             messages.error(request, 'Нет доступных анализов')
             return HttpResponseRedirect('http://127.0.0.1:7000/login/')
 
-        messages.error(request, f'Всего анализов обработано {len(result) - 1}. '
+        messages.success(request, f'Всего анализов обработано {len(result) - 1}. '
                                 f'Анализов не считано {result[-1]}')
+
         db.insert_analysis_data(result[:-1])
         return HttpResponseRedirect('http://127.0.0.1:7000/analysis_list/')
 
@@ -59,4 +60,4 @@ def login_data_post_view(request):
         count = db.insert_steps_data(result)
         messages.error(request, f'Всего дней с данными шагов обработано {count}.')
 
-    return HttpResponseRedirect('http://127.0.0.1:7000/login/')
+    return HttpResponseRedirect('http://127.0.0.1:7000/well_being/')

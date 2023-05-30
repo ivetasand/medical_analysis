@@ -2,6 +2,16 @@
 
 {% block content %}
 <h1>Список анализов</h1>
+
+	{% for message in messages %}
+
+    <div class="alert alert-success">
+        <a class="close" href="#" data-dismiss="alert">×</a>
+           {{ message }}
+    </div>
+
+	{% endfor %}
+
 <ul>
 	{% for analysis_type in analysis_list %}
 	<a href="{% url 'analysis_detail' analysis_type %}">
@@ -11,5 +21,3 @@
 	{% endfor %}
 </ul>
 {% endblock %}
-
-
