@@ -34,12 +34,12 @@ def login_view(request):
         messages.error(request, f'Всего анализов обработано {len(result) - 1}. '
                                 f'Анализов не считано {result[-1]}')
         db.insert_analysis_data(result[:-1])
-        return HttpResponseRedirect('http://127.0.0.1:7000/login/')
+        return HttpResponseRedirect('http://127.0.0.1:7000/analysis_list/')
 
     elif request.method == 'POST' and 'get_steps_data' in request.POST:
         service = Service()
         service.get_med_service('google_fit')
-        return HttpResponseRedirect('http://127.0.0.1:7000/login/')
+        return HttpResponseRedirect('http://127.0.0.1:7000/well_being/')
     else:
         return render(request, 'login.html', {})
 
