@@ -4,7 +4,7 @@
 <h2>График для текстового показателя: {{ analysis_type_name }}</h2>
 
 <div id="chart_div"></div>
-<div class="chart-container" style="position: relative; height:50vh; width:100vw">
+<div class="chart-container" style="text-align: center">
     <canvas id="line-chart"></canvas>
 </div>
 
@@ -62,13 +62,12 @@
         },
           tooltip: {
             callbacks: {
-                beforeTitle: function(context){
+                beforeTitle: function(context) {
                     number_of = "=".repeat((`${labs_json[context[0].dataIndex]}`).length * 3.5);
                     return `${number_of}\nЛаборатория: ${labs_json[context[0].dataIndex]}\n${number_of}\n`
                 },
                 title: function(context){
-                    a = `${values[context[0].dataIndex]}`
-
+                    a = `${results_json[context[0].dataIndex]}`;
                     if (a == '0') {
                         return 'Есть отклонения, обратитесь к специалисту'
                     }
