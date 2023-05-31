@@ -50,6 +50,7 @@ class MsDnkom:
             return ("Error 2")
         list_of_jpeg = []
 
+        numb_name = 0
         for i in range(0, len(item_find_analyzes), 1):
             response = session.post('http://results.dnkom.ru/cabinet/patient/login',
                                     data=data)
@@ -73,43 +74,48 @@ class MsDnkom:
             response = session.post(href)
 
             soupB = BeautifulSoup(response.text, "html.parser")
+
             items_find_img = soupB.findAll('a',
                                            class_="request-results-btn btn_icon")
+
             if items_find_img == 0:
                 list_of_jpeg.append("Error 3")
-            strAllData = str(items_find_img[0])
-            j = strAllData.find(' href=')
-            href2 = ""
-            j += 7
-            while strAllData[j] != '"':
-                href2 += strAllData[j]
-                j += 1
-            http = 'http://results.dnkom.ru'
-            href2 = http + href2
-            response = session.post(href2)
-
-            soupB = BeautifulSoup(response.text, "html.parser")
-            item_png = soupB.findAll('img')
-            if item_png == 0:
-                list_of_jpeg.append("Error 3")
-            strAllData2 = str(item_png[1])
-            j = strAllData2.find('src=')
-            href3 = ""
-            j += 5
-            while strAllData2[j] != '"':
-                href3 += strAllData2[j]
-                j += 1
-            if href3.startswith("/cabinet/patient//request_info/"):
+            for n in range(0, len(items_find_img)):
+                strAllData = str(items_find_img[n])
+                j = strAllData.find(' href=')
+                href2 = ""
+                j += 7
+                while strAllData[j] != '"':
+                    href2 += strAllData[j]
+                    j += 1
                 http = 'http://results.dnkom.ru'
-                href3 = http + href3
-                response = session.post(href3)
+                href2 = http + href2
+                response = session.post(href2)
 
-                if response.status_code == 200:
-                    with open('temp' + str(i) + '.jpeg', 'wb') as f:
-                        f.write(response.content)
-                else:
-                    list_of_jpeg.append('Error 3')
-                list_of_jpeg.append(str('temp' + str(i) + '.jpeg'))
+                soupB = BeautifulSoup(response.text, "html.parser")
+                item_png = soupB.findAll('img')
+                if item_png == 0:
+                    list_of_jpeg.append("Error 3")
+                strAllData2 = str(item_png[1])
+                j = strAllData2.find('src=')
+                href3 = ""
+                j += 5
+                while strAllData2[j] != '"':
+                    href3 += strAllData2[j]
+                    j += 1
+                if href3.startswith("/cabinet/patient//request_info/"):
+                    http = 'http://results.dnkom.ru'
+                    href3 = http + href3
+                    response = session.post(href3)
+
+                    if response.status_code == 200:
+                        with open('temp' + str(numb_name) + '.jpeg', 'wb') as f:
+                            f.write(response.content)
+                        list_of_jpeg.append(str('temp' + str(numb_name) + '.jpeg'))
+                    else:
+                        list_of_jpeg.append('Error 3')
+                    numb_name = numb_name + 1
+
         return (list_of_jpeg)
 
 
