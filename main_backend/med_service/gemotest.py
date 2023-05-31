@@ -58,15 +58,11 @@ class MsGemotest:
                 'Authorization': 'Bearer ' + access_token
             })
 
-            s = str(response.text)
-            i = s.find('"services":[{"id":"')
-            while i != -1:
+            data_services = json.loads(response.text)
+            services = data_services["services"]
+            for service in services:
                 data_json.append(order["date"])
-                services_id = ""
-                i += 20
-                while s[i] != '"':
-                    services_id += s[i]
-                    i += 1
+                services_id = service["id"]
                 http = 'https://api2.gemotest.ru/customer/v3/order/'
                 services_id = http + order_num + "/service/Macro+PRL_" + services_id
                 response = session.post(services_id)
@@ -78,9 +74,6 @@ class MsGemotest:
                 data_json.append(json.loads(
                     response.content.decode("utf-8").replace("'", '"'))[
                                      "tests"])
-                s = s[i:]
-                i = s.find('"service":{"id":"')
-
         return (data_json)
 
     def parse(self, old_list):
@@ -94,17 +87,19 @@ class MsGemotest:
                     list_results.append(gemo_json["title"])
                     gemo_json_value = gemo_json["value"]
 
-                    if gemo_json_value.endswith("-"):
-                        gemo_json_value = gemo_json_value[:-2]
-
+                    gemo_json_value = plus_minus_remove(gemo_json_value)
                     if is_numeric(gemo_json_value):
                         list_results.append(1)
+
                         if (is_numeric(gemo_json_value)) & (
                                 is_numeric(
                                     gemo_json["reference_range"]["max_value"])) & (
                                 is_numeric(
                                     gemo_json["reference_range"]["min_value"])):
+
+                            gemo_json_value = remove_trailing_space(gemo_json_value)
                             list_results.append(gemo_json_value)
+
                             if (gemo_json["reference_range"]["max_value"] != "") & (
                                     gemo_json["reference_range"][
                                         "min_value"] != ""):
@@ -115,6 +110,7 @@ class MsGemotest:
                                 list_results.append(old_list[n][:10])
                                 list_results.append(gemo_json["unit"])
                         else:
+                            gemo_json_value = remove_trailing_space(gemo_json_value)
                             list_results.append(gemo_json_value)
                             list_results.append("")
                             list_results.append("")
@@ -123,6 +119,7 @@ class MsGemotest:
 
                     else:
                         list_results.append(0)
+                        gemo_json_value = remove_trailing_space(gemo_json_value)
                         list_results.append(gemo_json_value)
                         list_results.append(gemo_json["reference_range"]["text"])
                         list_results.append(old_list[n][:10])
@@ -137,3 +134,16 @@ def is_numeric(value):
         return True
     except ValueError:
         return False
+
+def remove_trailing_space(string):
+    if string.endswith(' '):
+        string = string[:-1]
+    return string
+
+def plus_minus_remove(item):
+    if '+' in item:
+        return item.replace('+', '')
+    elif '-' in item:
+        return item.replace('-', '')
+    else:
+        return item
