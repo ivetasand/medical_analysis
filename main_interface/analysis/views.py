@@ -45,7 +45,7 @@ def analysis_detail_view(request, analysis_type):
     else:
         obj.sort(key=lambda x: x[9])
 
-        results = [1 if sublist[4] == sublist[6] else 0 for sublist in obj]
+        results = [0 if sublist[4] == sublist[6] else 1 for sublist in obj]
         references = [sublist[6] for sublist in obj]
         dates = [sublist[9] for sublist in obj]
         months = __for_better_dates_display(dates)
