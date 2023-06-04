@@ -94,6 +94,10 @@ class DbInterface:
             self.db_connector.insert_steps(record[1], record[0])
         return unique_steps_count
 
+    def delete_db(self):
+        return self.db_connector.delete()
+
+
 data_sample_for_testing = \
     [
         # [lab_name, analysis_type_name, is_result_numeric, result_text,
@@ -113,4 +117,4 @@ data_sample_for_testing = \
 # print(interface.fetch_data("ВПЧ типы 51,56"))
 # print(interface.fetch_data("витамин А"))
 # print(interface.insert_steps_data([['2023-04-11', 1234], ['2023-04-12', 432]]))
-# print(interface.fetch_steps_data('2023-04-11'))
+# # print(interface.fetch_steps_data('2023-04-11'))

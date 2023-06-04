@@ -23,7 +23,7 @@
 					ресурс</a>
 			</li>
 			<li class="{% if url_name == 'analysis_edit' %}active{% endif %}">
-				<a class="nav-link">Ручное внесение</a>
+				<a class="nav-link" href="{% url 'analysis_edit_choice' %}">Ручное редактирование</a>
 			</li>
 			{% endwith %}
 		</ul>

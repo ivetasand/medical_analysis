@@ -23,7 +23,8 @@ from pages.views import home_view
 from analysis.views import analysis_detail_view, analysis_list_view, \
     analysis_numeric_edit_view, choice_view, analysis_text_edit_view
 from login.views import login_view, login_data_post_view
-from well_being.views import well_being_list_view, well_being_detail_view
+from well_being.views import well_being_list_view, well_being_detail_view, \
+    steps_edit_view
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -44,4 +45,6 @@ urlpatterns = [
          name='analysis_edit_numeric'),
     path('analysis_edit/text/', analysis_text_edit_view,
          name='analysis_edit_text'),
+    path('analysis_edit/steps/', steps_edit_view,
+         name='steps_edit')
 ]

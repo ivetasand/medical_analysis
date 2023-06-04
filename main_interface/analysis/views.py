@@ -9,7 +9,6 @@ def analysis_detail_view(request, analysis_type):
 
     obj = interface.fetch_analysis_data(analysis_type)
     labs = [sublist[1] for sublist in obj]
-    # print(obj)
 
     if obj[0][3]:
         obj.sort(key=lambda x: x[9])
@@ -21,13 +20,6 @@ def analysis_detail_view(request, analysis_type):
         results_dates_lower_upper = zip(results, dates, lower_limits,
                                         upper_limits)
         months = __for_better_dates_display(dates)
-
-        # print(f'Это даты {dates}, {len(dates)}')
-        # print(f'Это резы {results}, {len(results)}')
-        # print(f'Это рефы вернх {upper_limits}, {len(upper_limits)}')
-        # print(f'Это рефы нижн {lower_limits}, {len(lower_limits)}')
-        # print(f'Это лабы {labs}, {len(labs)}')
-
         context = {
             'analysis_type_name': obj[0][2],
             'units': obj[0][-1],
@@ -49,11 +41,6 @@ def analysis_detail_view(request, analysis_type):
         references = [sublist[6] for sublist in obj]
         dates = [sublist[9] for sublist in obj]
         months = __for_better_dates_display(dates)
-        # print(dates)
-        # print(f'Это даты {dates}, {len(dates)}')
-        # print(f'Это резы {results}, {len(results)}')
-        # print(f'Это рефы {references}, {len(references)}')
-        # print(f'Это лабы {labs}, {len(labs)}')
         context = {
             'analysis_type_name': obj[0][2],
             'results': results,
@@ -105,19 +92,20 @@ def analysis_list_view(request):
 
 
 def analysis_numeric_edit_view(request):
-    # form = MyForm()
-    # if request.method == 'POST':
-    #     form = MyForm(request.POST)
-    #     if form.is_valid():
-    #         cd = form.cleaned_data
-    #         # now in the object cd, you have the form as a dictionary.
-    #         a = cd.get('a')
-
     if request.method == 'POST':
         form = NumericForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data.get('analysis_name'))
-            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_edit/')
+            analysis_name = form.cleaned_data.get('analysis_name')
+            lab_name = form.cleaned_data.get('lab_name')
+            result_value = form.cleaned_data.get('result_value')
+            lower_ref = form.cleaned_data.get('lower_ref')
+            upper_ref = form.cleaned_data.get('upper_ref')
+            timestamp = form.cleaned_data.get('timestamp')
+            units = form.cleaned_data.get('units')
+            db = DbInterface()
+            db.insert_analysis_data([(lab_name, analysis_name, 1, result_value,
+                                      lower_ref, upper_ref, timestamp, units)])
+            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_list/')
     else:
         form = NumericForm()
 
@@ -128,19 +116,19 @@ def analysis_numeric_edit_view(request):
 
 
 def analysis_text_edit_view(request):
-    # form = MyForm()
-    # if request.method == 'POST':
-    #     form = MyForm(request.POST)
-    #     if form.is_valid():
-    #         cd = form.cleaned_data
-    #         # now in the object cd, you have the form as a dictionary.
-    #         a = cd.get('a')
-
     if request.method == 'POST':
         form = TextForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data.get('analysis_name'))
-            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_edit/')
+            analysis_name = form.cleaned_data.get('analysis_name')
+            lab_name = form.cleaned_data.get('lab_name')
+            result_text = form.cleaned_data.get('result_text')
+            reference_text = form.cleaned_data.get('reference_text')
+            timestamp = form.cleaned_data.get('timestamp')
+            db = DbInterface()
+
+            db.insert_analysis_data([(lab_name, analysis_name, 0, result_text,
+                                      reference_text, timestamp)])
+            return HttpResponseRedirect('http://127.0.0.1:7000/analysis_list/')
     else:
         form = TextForm()
 
@@ -157,5 +145,12 @@ def choice_view(request):
     elif request.method == 'POST' and 'text_choice' in request.POST:
         return HttpResponseRedirect(
             'http://127.0.0.1:7000/analysis_edit/text/')
+    elif request.method == 'POST' and 'steps_choice' in request.POST:
+        return HttpResponseRedirect(
+            'http://127.0.0.1:7000/analysis_edit/steps/')
+    elif request.method == 'POST' and 'delete_choice' in request.POST:
+        db = DbInterface()
+        db.delete_db()
+        return HttpResponseRedirect('http://127.0.0.1:7000/home/')
 
     return render(request, "analysis/edit/choose.html", {})

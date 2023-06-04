@@ -1,6 +1,9 @@
 import logging
+import os
 import sqlite3
 from sqlite3 import Error
+
+from utils.constants.database import TABLES_LIST
 
 
 class DbConnector:
@@ -379,5 +382,14 @@ class DbConnector:
         rows = cur.fetchall()
         return rows
 
-    def delete(self, table, data):
-        return
+    def delete(self):
+        cur = self.connection.cursor()
+
+        for table in TABLES_LIST:
+            try:
+                cur.execute(f'DELETE FROM {table}')
+                logging.info('Table deleted successfully')
+            except Error as e:
+                logging.error(f'The error {e} occurred')
+
+        self.connection.commit()

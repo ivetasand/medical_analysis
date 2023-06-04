@@ -20,7 +20,7 @@ UNITS_TABLE_CREATION = (
     "CREATE TABLE IF NOT EXISTS units (\n"
     "id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
     "name TEXT NOT NULL\n"
-   # "is_main INTEGER NOT NULL\n"
+    # "is_main INTEGER NOT NULL\n"
     ");\n")
 
 UNITS_CONVERSION_TABLE_CREATION = (
@@ -40,7 +40,7 @@ ANALYSIS_VALUE_TABLE_CREATION = (
     "is_result_numeric INTEGER NOT NULL,\n"
     "result_text TEXT,\n"
     "result_value REAL,\n"
-   # "is_reference_numeric INTEGER NOT NULL,\n"
+    # "is_reference_numeric INTEGER NOT NULL,\n"
     "reference TEXT,\n"
     "lower_limit REAL,\n"
     "upper_limit REAL,\n"
@@ -65,4 +65,13 @@ TABLES_QUERIES_LIST = [
     UNITS_TABLE_CREATION,
     UNITS_CONVERSION_TABLE_CREATION,
     STEPS_TABLE_CREATION
+]
+
+TABLES_LIST = [
+    "laboratory",
+    "analysis_value_type",
+    "analysis_value",
+    "units",
+    "units_conversion",
+    "steps_wellbeing"
 ]
