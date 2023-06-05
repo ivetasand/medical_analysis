@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h1>Внесите данные самостоятельно</h1>
+<h4>Какой тип анализа вы хотите внести?</h4>
+
+<body>
+<div class="box";style="white-space: pre-line">
+
+<div class="mx-auto" >
+<form  action="" method="post" class="form-horizontal">
+	{% csrf_token %}
+<button type="submit" class="btn btn-primary" name="numeric_choice">Числовой показатель</button>
+</form>
+	<p><form action="" method="post" class="form-horizontal">
+	{% csrf_token %}
+<button type="submit" class="btn btn-primary" name="text_choice">Текстовый показатель</button>
+</form></p>
+<h4>Вы хотите внести данные о шагах?</h4>
+	<form  action="" method="post" class="form-horizontal">
+	{% csrf_token %}
+<button type="submit" class="btn btn-primary" name="steps_choice">Внести шаги</button>
+</form>
+	<h4>Вы хотите удалить все данные?</h4>
+	<form  action="" method="post" class="form-horizontal">
+	{% csrf_token %}
+<button type="submit" class="btn btn-primary" name="delete_choice">Удалить данные</button>
+</form>
+
+</div>
+</body>
+{% endblock %}

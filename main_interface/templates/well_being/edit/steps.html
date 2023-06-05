@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h1>Внесите анализы самостоятельно</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{form_key.as_p}}
+
+    <input type="submit" value="Внести анализы" class="btn btn-primary">
+</form>
+
+{% endblock %}
