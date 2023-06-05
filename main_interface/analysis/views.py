@@ -95,7 +95,8 @@ def analysis_numeric_edit_view(request):
     if request.method == 'POST':
         form = NumericForm(request.POST)
         if form.is_valid():
-            analysis_name = form.cleaned_data.get('analysis_name')
+            analysis_name = form.cleaned_data.get('analysis_name').\
+                replace('/', '\N{DIVISION SLASH}')
             lab_name = form.cleaned_data.get('lab_name')
             result_value = form.cleaned_data.get('result_value')
             lower_ref = form.cleaned_data.get('lower_ref')
@@ -119,7 +120,8 @@ def analysis_text_edit_view(request):
     if request.method == 'POST':
         form = TextForm(request.POST)
         if form.is_valid():
-            analysis_name = form.cleaned_data.get('analysis_name')
+            analysis_name = form.cleaned_data.get('analysis_name').\
+                replace('/', '\N{DIVISION SLASH}')
             lab_name = form.cleaned_data.get('lab_name')
             result_text = form.cleaned_data.get('result_text')
             reference_text = form.cleaned_data.get('reference_text')

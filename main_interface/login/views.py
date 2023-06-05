@@ -34,6 +34,9 @@ def login_view(request):
         messages.success(request, f'Всего анализов обработано {len(result) - 1}. '
                                 f'Анализов не считано {result[-1]}')
 
+        for value in result[:-1]:
+            value[1] = value[1].replace('/', '\N{DIVISION SLASH}')
+
         db.insert_analysis_data(result[:-1])
         return HttpResponseRedirect('http://127.0.0.1:7000/analysis_list/')
 
